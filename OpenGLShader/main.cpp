@@ -2,6 +2,8 @@
 #include "glew.h"
 #include <stdio.h>
 #include <math.h>
+#include "shader.h"
+#include "resource.h"
 
 LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -175,6 +177,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	};
 	float *projection = CreatePerspective(50.0f,800.0f/600.0f,0.1f,1000.0f);
 
+	//auto aa = Shader::GetShaderCode(IDR_SHADER_SAMPLE_VS);
 
 	struct Vertex
 	{
