@@ -131,13 +131,16 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Res\shader\sample.fs" />
     <None Include="Res\shader\sample.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\macros.h" />
     <ClInclude Include="include\shader.h" />
+    <ClInclude Include="include\utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

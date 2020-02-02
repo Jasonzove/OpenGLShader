@@ -1,7 +1,7 @@
 #include <windows.h>
-#include "glew.h"
 #include <stdio.h>
 #include <math.h>
+#include "glew.h"
 #include "shader.h"
 #include "resource.h"
 
@@ -16,34 +16,14 @@ LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd,msg,wParam,lParam);
 }
 
-char* LoadFileContent(const char*path)
-{
-	char *pFileContent = NULL;
-	FILE*pFile = fopen(path, "rb");
-	if (pFile)
-	{
-		fseek(pFile, 0, SEEK_END);
-		int nLen = ftell(pFile);
-		if (nLen > 0)
-		{
-			rewind(pFile);
-			pFileContent = new char[nLen + 1];
-			fread(pFileContent,1,nLen,pFile);
-			pFileContent[nLen] = '\0';
-		}
-		fclose(pFile);
-	}
-	return pFileContent;
-}
-
 GLuint CreateProgram(const char*vsPath,const char*fsPath)
 {
 	GLuint program=glCreateProgram();
 	GLuint vsShader, fsShader;
 	vsShader = glCreateShader(GL_VERTEX_SHADER);
 	fsShader = glCreateShader(GL_FRAGMENT_SHADER);
-	const char*vsCode = LoadFileContent(vsPath);
-	const char*fsCode = LoadFileContent(fsPath);
+	const char*vsCode = Shader::GetShaderCode(IDR_SHADER_SAMPLE_VS);
+	const char*fsCode = Shader::GetShaderCode(IDR_SHADER_SAMPLE_FS);
 	glShaderSource(vsShader, 1, &vsCode, nullptr);
 	glShaderSource(fsShader, 1, &fsCode, nullptr);
 	glCompileShader(vsShader);
@@ -105,7 +85,6 @@ unsigned char* LoadBMP(const char*path, int &width, int &height)
 	}
 	return imageData;
 }
-
 
 INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {

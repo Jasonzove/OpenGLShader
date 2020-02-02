@@ -3,7 +3,7 @@
 
 std::unordered_map<int, const char*> Shader::mShaderCodes = std::unordered_map<int, const char*>();
 
-const char* const& Shader::GetShaderCode(int id)
+const char* Shader::GetShaderCode(const int& id)
 {
 	if (mShaderCodes.end() != mShaderCodes.find(id))
 	{
