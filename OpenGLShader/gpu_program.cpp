@@ -59,7 +59,7 @@ GLuint GPUProgram::CompileShader_i(GLuint shaderType, const int& shaderId)
 	const char* shaderCode = Shader::GetShaderCode(shaderId);
 	if (nullptr == shaderCode)
 	{
-		printf("cannot load shader code, shaderId:%d", shaderId);
+		printf("cannot load shader code, shaderId:%d\n", shaderId);
 		return 0;
 	}
 
@@ -69,14 +69,14 @@ GLuint GPUProgram::CompileShader_i(GLuint shaderType, const int& shaderId)
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &nResult);
 	if (GL_FALSE == nResult)
 	{
-		printf("compile shader failed!\n, %s\n", shaderCode);
+		printf("compile shader failed!\n\nCODE:\n%s\n\n", shaderCode);
 		GLint logLength;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 		char* log = new char[logLength];
 		memset(log, 0, logLength);
 		GLsizei writed = 0;
 		glGetShaderInfoLog(shader, logLength, &writed, log);
-		printf("%s\n", log);
+		printf("ERROR:\n%s\n", log);
 		DEL_PTR(log);
 		glDeleteShader(shader);
 		return 0;
