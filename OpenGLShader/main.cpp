@@ -146,16 +146,14 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	gpuProgram.Link();
 	GLuint program = gpuProgram.mProgram;
 
-	GLint posLoc, colorLoc,texcoordLoc,mLoc,vLoc,ploc,textureLoc;
-	posLoc = glGetAttribLocation(program, "pos");
-	colorLoc = glGetAttribLocation(program, "color");
-	texcoordLoc = glGetAttribLocation(program, "texcoord");
-
-	mLoc = glGetUniformLocation(program,"M");
-	vLoc = glGetUniformLocation(program,"V");
-	ploc = glGetUniformLocation(program, "P");
-	textureLoc = glGetUniformLocation(program, "U_MainTexture");
-
+	//获取属性位置
+	gpuProgram.DetectAttribute("pos");
+	gpuProgram.DetectAttribute("color");
+	gpuProgram.DetectAttribute("texcoord");
+	gpuProgram.DetectUniform("M");
+	gpuProgram.DetectUniform("V");
+	gpuProgram.DetectUniform("P");
+	gpuProgram.DetectUniform("U_MainTexture");
 
 	float identity[] = {
 		1.0f,0,0,0,
@@ -248,21 +246,21 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(program);
-		glUniformMatrix4fv(mLoc, 1,GL_FALSE,identity);
-		glUniformMatrix4fv(vLoc, 1, GL_FALSE, identity);
-		glUniformMatrix4fv(ploc, 1, GL_FALSE, projection);
+		glUniformMatrix4fv(gpuProgram.GetLocation("M"), 1,GL_FALSE,identity);
+		glUniformMatrix4fv(gpuProgram.GetLocation("V"), 1, GL_FALSE, identity);
+		glUniformMatrix4fv(gpuProgram.GetLocation("P"), 1, GL_FALSE, projection);
 		
-		glUniform1i(textureLoc, 0);
+		glUniform1i(gpuProgram.GetLocation("U_MainTexture"), 0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glEnableVertexAttribArray(posLoc);
-		glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+		glEnableVertexAttribArray(gpuProgram.GetLocation("pos"));
+		glVertexAttribPointer(gpuProgram.GetLocation("pos"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
-		glEnableVertexAttribArray(colorLoc);
-		glVertexAttribPointer(colorLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float)*3));
+		glEnableVertexAttribArray(gpuProgram.GetLocation("color"));
+		glVertexAttribPointer(gpuProgram.GetLocation("color"), 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float)*3));
 
-		glEnableVertexAttribArray(texcoordLoc);
-		glVertexAttribPointer(texcoordLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float) * 7));
+		glEnableVertexAttribArray(gpuProgram.GetLocation("texcoord"));
+		glVertexAttribPointer(gpuProgram.GetLocation("texcoord"), 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float) * 7));
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_SHORT, 0);

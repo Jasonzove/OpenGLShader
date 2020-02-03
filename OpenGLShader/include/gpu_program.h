@@ -17,6 +17,8 @@
 #define __GPU_PROGRAM_H__
 
 #include <stack>
+#include <unordered_map>
+#include <string>
 #include "macros.h"
 #include "glew.h"
 
@@ -31,10 +33,14 @@ public:
 public:
 	void AttachShader(GLuint shaderType, const int& shaderId);
 	void Link();
+	void DetectAttribute(const char* const& attributeName);
+	void DetectUniform(const char* const& uniformName);
+	GLint GetLocation(const char* const& name);
 
 public:
 	GLuint mProgram; //program id
 	std::stack<GLuint> mAttachedShaders;
+	std::unordered_map<std::string, GLint> mLocations;
 
 private:
 	GLuint CompileShader_i(GLuint shaderType, const int& shaderId);
