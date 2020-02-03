@@ -6,6 +6,7 @@
 #include "resource.h"
 #include "macros.h"
 #include "gpu_program.h"
+#include "utils.h"
 
 using namespace LH;
 
@@ -18,28 +19,6 @@ LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return DefWindowProc(hwnd,msg,wParam,lParam);
-}
-
-GLuint CreateProgram(const char*vsPath,const char*fsPath)
-{
-	GLuint program=glCreateProgram();
-	GLuint vsShader, fsShader;
-	vsShader = glCreateShader(GL_VERTEX_SHADER);
-	fsShader = glCreateShader(GL_FRAGMENT_SHADER);
-	const char*vsCode = LH::Shader::GetShaderCode(IDR_SHADER_SAMPLE_VS);
-	const char*fsCode = LH::Shader::GetShaderCode(IDR_SHADER_SAMPLE_FS);
-	glShaderSource(vsShader, 1, &vsCode, nullptr);
-	glShaderSource(fsShader, 1, &fsCode, nullptr);
-	glCompileShader(vsShader);
-	glCompileShader(fsShader);
-	glAttachShader(program, vsShader);
-	glAttachShader(program, fsShader);
-	glLinkProgram(program);
-	glDetachShader(program, vsShader);
-	glDetachShader(program, fsShader);
-	glDeleteShader(vsShader);
-	glDeleteShader(fsShader);
-	return program;
 }
 
 float* CreatePerspective(float fov, float aspect, float zNear, float zFar)
@@ -56,38 +35,6 @@ float* CreatePerspective(float fov, float aspect, float zNear, float zFar)
 	matrix[11] = -1.0f;
 	matrix[14] = (2.0f*zNear*zFar) / (zNear - zFar);
 	return matrix;
-}
-
-unsigned char* LoadBMP(const char*path, int &width, int &height)
-{
-	unsigned char*imageData=nullptr;
-	FILE *pFile = fopen(path, "rb");
-	if (pFile)
-	{
-		BITMAPFILEHEADER bfh;
-		fread(&bfh, sizeof(BITMAPFILEHEADER), 1, pFile);
-		if (bfh.bfType==0x4D42)
-		{
-			BITMAPINFOHEADER bih;
-			fread(&bih, sizeof(BITMAPINFOHEADER), 1, pFile);
-			width = bih.biWidth;
-			height = bih.biHeight;
-			int pixelCount = width*height * 3;
-			imageData = new unsigned char[pixelCount];
-			fseek(pFile, bfh.bfOffBits, SEEK_SET);
-			fread(imageData, 1, pixelCount, pFile);
-
-			unsigned char temp;
-			for (int i=0;i<pixelCount;i+=3)
-			{
-				temp = imageData[i+2];
-				imageData[i + 2] = imageData[i];
-				imageData[i] = temp;
-			}
-		}
-		fclose(pFile);
-	}
-	return imageData;
 }
 
 INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
@@ -129,7 +76,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glewInit();
 	unsigned char*imageData = nullptr;
 	int width, height;
-	imageData = LoadBMP("Res/image/test.bmp", width, height);
+	imageData = Utils::LoadBMP("Res/image/test.bmp", width, height);
 
 	GLuint mainTexture;
 	glGenTextures(1, &mainTexture);

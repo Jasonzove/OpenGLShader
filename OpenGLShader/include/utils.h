@@ -23,6 +23,8 @@ class Utils
 {
 public:
 	static const char* LoadFileContent(const char* const& filePath);
+
+	static unsigned char* LoadBMP(const char* path, int& width, int& height);
 };
 
 
