@@ -4,6 +4,10 @@
 #include "glew.h"
 #include "shader.h"
 #include "resource.h"
+#include "macros.h"
+#include "gpu_program.h"
+
+using namespace LH;
 
 LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -22,8 +26,8 @@ GLuint CreateProgram(const char*vsPath,const char*fsPath)
 	GLuint vsShader, fsShader;
 	vsShader = glCreateShader(GL_VERTEX_SHADER);
 	fsShader = glCreateShader(GL_FRAGMENT_SHADER);
-	const char*vsCode = Shader::GetShaderCode(IDR_SHADER_SAMPLE_VS);
-	const char*fsCode = Shader::GetShaderCode(IDR_SHADER_SAMPLE_FS);
+	const char*vsCode = LH::Shader::GetShaderCode(IDR_SHADER_SAMPLE_VS);
+	const char*fsCode = LH::Shader::GetShaderCode(IDR_SHADER_SAMPLE_FS);
 	glShaderSource(vsShader, 1, &vsCode, nullptr);
 	glShaderSource(fsShader, 1, &fsCode, nullptr);
 	glCompileShader(vsShader);
@@ -136,7 +140,12 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
 	glBindTexture(GL_TEXTURE_2D,0);
 
-	GLuint program = CreateProgram("Res/shader/sample.vs", "Res/shader/sample.fs");
+	GPUProgram gpuProgram;
+	gpuProgram.AttachShader(GL_VERTEX_SHADER, IDR_SHADER_SAMPLE_VS);
+	gpuProgram.AttachShader(GL_FRAGMENT_SHADER, IDR_SHADER_SAMPLE_FS);
+	gpuProgram.Link();
+	GLuint program = gpuProgram.mProgram;
+
 	GLint posLoc, colorLoc,texcoordLoc,mLoc,vLoc,ploc,textureLoc;
 	posLoc = glGetAttribLocation(program, "pos");
 	colorLoc = glGetAttribLocation(program, "color");

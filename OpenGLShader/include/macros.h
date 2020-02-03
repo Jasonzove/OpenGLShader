@@ -23,6 +23,18 @@
 #define LH_NAMESPACE_END }
 #endif // !LH_NAMESPACE_END
 
+//¶Ñ„h³ý
+#ifndef DEL_PTR
+#define DEL_PTR(ptr)\
+do\
+{\
+	if (nullptr != ptr)\
+	{\
+		delete(ptr);\
+		ptr = nullptr;\
+	}\
+} while (false)
+#endif // !DEL_PTR
 
 
 

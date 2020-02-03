@@ -12,8 +12,8 @@
 *Data:2020/2/2
 ===================================
 */
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef __UTILS_H__
+#define __UTILS_H__
 
 #include"macros.h"
 
