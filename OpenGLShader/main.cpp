@@ -8,6 +8,8 @@
 #include "gpu_program.h"
 #include "utils.h"
 #include "obj_model.h"
+#include "Glm/glm.hpp"
+#include "Glm/ext.hpp"
 
 using namespace LH;
 
@@ -115,10 +117,15 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	};
 	float *projection = CreatePerspective(50.0f,800.0f/600.0f,0.1f,1000.0f);
 
+	glm::mat4 modeMatrix = glm::translate(0.0f, 0.0f, -2.0f) * glm::rotate(30.0f, 0.0f, 0.0f, -1.0f);
+
 	glClearColor(41.0f/255.0f,  71.0f/255.0f, 121.0f / 255.0f, 1.0f);
 
 	ShowWindow(hwnd, SW_SHOW);
 	UpdateWindow(hwnd);
+
+	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	MSG msg;
 	while (true)
@@ -132,10 +139,10 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(gpuProgram.mProgram);
-		glUniformMatrix4fv(gpuProgram.GetLocation("M"), 1,GL_FALSE,identity);
+		glUniformMatrix4fv(gpuProgram.GetLocation("M"), 1,GL_FALSE, glm::value_ptr(modeMatrix));
 		glUniformMatrix4fv(gpuProgram.GetLocation("V"), 1, GL_FALSE, identity);
 		glUniformMatrix4fv(gpuProgram.GetLocation("P"), 1, GL_FALSE, projection);
 		
