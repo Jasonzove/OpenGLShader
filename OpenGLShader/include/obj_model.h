@@ -21,11 +21,27 @@
 
 LH_NAMESPACE_BEGIN
 
-struct VertexData
+struct VertexData //Opengl需要的数据
 {
 	float position[3];
 	float texcoord[2];
 	float normal[3];
+};
+
+struct VertexInfo //解码obj模型需要的数据结构，用于保存position,texcoord,normal数据
+{
+	float v[3];
+	VertexInfo()
+	{
+		memset(v, 0, sizeof(float) * 3);
+	}
+};
+
+struct VertexDefine //点的定义
+{
+	unsigned int positionIndex;
+	unsigned int texcoordIndex;
+	unsigned int normalIndex;
 };
 
 class ObjModel
