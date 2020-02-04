@@ -30,6 +30,9 @@
     <ClCompile Include="gpu_program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="obj_model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Res\shader\sample.fs">
@@ -53,6 +56,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\gpu_program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\obj_model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

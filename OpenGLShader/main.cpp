@@ -7,6 +7,7 @@
 #include "macros.h"
 #include "gpu_program.h"
 #include "utils.h"
+#include "obj_model.h"
 
 using namespace LH;
 
@@ -78,6 +79,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int width, height;
 	imageData = Utils::LoadBMP("Res/image/test.bmp", width, height);
 
+	//init program
 	GLuint mainTexture;
 	glGenTextures(1, &mainTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -91,7 +93,6 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	gpuProgram.AttachShader(GL_VERTEX_SHADER, IDR_SHADER_SAMPLE_VS);
 	gpuProgram.AttachShader(GL_FRAGMENT_SHADER, IDR_SHADER_SAMPLE_FS);
 	gpuProgram.Link();
-	GLuint program = gpuProgram.mProgram;
 
 	//获取属性位置
 	gpuProgram.DetectAttribute("pos");
@@ -102,6 +103,10 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	gpuProgram.DetectUniform("P");
 	gpuProgram.DetectUniform("U_MainTexture");
 
+	//init model
+	ObjModel model;
+	model.Init("Res/model/Cube.obj");
+
 	float identity[] = {
 		1.0f,0,0,0,
 		0,1.0f,0,0,
@@ -109,69 +114,6 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		0,0,0,1.0f
 	};
 	float *projection = CreatePerspective(50.0f,800.0f/600.0f,0.1f,1000.0f);
-
-	//auto aa = Shader::GetShaderCode(IDR_SHADER_SAMPLE_VS);
-
-	struct Vertex
-	{
-		float v[3];
-		float rgba[4];
-		float texcoord[4];
-	};
-
-	Vertex vertex[4];
-	memset(vertex, 0, sizeof(Vertex) * 4);
-	vertex[0].v[0] = 0.0f;
-	vertex[0].v[1] = 0.0f;
-	vertex[0].v[2] = -30.0f;
-	vertex[0].rgba[0] = 1.0f;
-	vertex[0].rgba[1] = 1.0f; 
-	vertex[0].rgba[2] = 1.0f; 
-	vertex[0].rgba[3] = 1.0f;
-	vertex[0].texcoord[0] = 0.0f;
-	vertex[0].texcoord[1] = 0.0f;
-
-	vertex[1].v[0] = 10.0f;
-	vertex[1].v[1] = 0.0f;
-	vertex[1].v[2] = -30.0f;
-	vertex[1].rgba[0] = 1.0f;
-	vertex[1].rgba[1] = 1.0f;
-	vertex[1].rgba[2] = 1.0f;
-	vertex[1].rgba[3] = 1.0f;
-	vertex[1].texcoord[0] = 1.0f;
-	vertex[1].texcoord[1] = 0.0f;
-
-	vertex[2].v[0] = 10.0f;
-	vertex[2].v[1] = 10.0f;
-	vertex[2].v[2] = -30.0f;
-	vertex[2].rgba[0] = 1.0f;
-	vertex[2].rgba[1] = 1.0f;
-	vertex[2].rgba[2] = 1.0f;
-	vertex[2].rgba[3] = 1.0f;
-	vertex[2].texcoord[0] = 1.0f;
-	vertex[2].texcoord[1] = 1.0f;
-
-	vertex[3].v[0] = 0.0f;
-	vertex[3].v[1] = 10.0f;
-	vertex[3].v[2] = -30.0f;
-	vertex[3].rgba[0] = 1.0f;
-	vertex[3].rgba[1] = 1.0f;
-	vertex[3].rgba[2] = 1.0f;
-	vertex[3].rgba[3] = 1.0f;
-	vertex[3].texcoord[0] = 0.0f;
-	vertex[3].texcoord[1] = 1.0f;
-
-	unsigned short indexes[] = {0,1,2,3};
-	GLuint vbo,ibo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4, vertex, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * 4, indexes, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glClearColor(41.0f/255.0f,  71.0f/255.0f, 121.0f / 255.0f, 1.0f);
 
@@ -192,26 +134,15 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(program);
+		glUseProgram(gpuProgram.mProgram);
 		glUniformMatrix4fv(gpuProgram.GetLocation("M"), 1,GL_FALSE,identity);
 		glUniformMatrix4fv(gpuProgram.GetLocation("V"), 1, GL_FALSE, identity);
 		glUniformMatrix4fv(gpuProgram.GetLocation("P"), 1, GL_FALSE, projection);
 		
 		glUniform1i(gpuProgram.GetLocation("U_MainTexture"), 0);
 
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glEnableVertexAttribArray(gpuProgram.GetLocation("pos"));
-		glVertexAttribPointer(gpuProgram.GetLocation("pos"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-
-		glEnableVertexAttribArray(gpuProgram.GetLocation("color"));
-		glVertexAttribPointer(gpuProgram.GetLocation("color"), 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float)*3));
-
-		glEnableVertexAttribArray(gpuProgram.GetLocation("texcoord"));
-		glVertexAttribPointer(gpuProgram.GetLocation("texcoord"), 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float) * 7));
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_SHORT, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		model.Bind(gpuProgram.GetLocation("pos"), gpuProgram.GetLocation("texcoord"), gpuProgram.GetLocation("normal"));
+		model.Draw();
 
 		glUseProgram(0);
 		SwapBuffers(dc);
