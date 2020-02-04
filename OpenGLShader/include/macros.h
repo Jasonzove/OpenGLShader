@@ -36,5 +36,17 @@ do\
 } while (false)
 #endif // !DEL_PTR
 
+#ifndef DEL_ARRAY
+#define DEL_ARRAY(ptr) \
+do\
+{\
+	if (nullptr != ptr)\
+	{\
+		delete[] ptr;\
+		ptr = nullptr;\
+	}\
+}while(false)
+
+#endif // !DEL_ARRAY
 
 

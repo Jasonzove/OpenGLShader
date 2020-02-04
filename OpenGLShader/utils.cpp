@@ -56,4 +56,14 @@ unsigned char* Utils::LoadBMP(const char* path, int& width, int& height)
 	return imageData;
 }
 
+GLuint Utils::CreateBufferObject(GLenum bufferType, GLsizeiptr size, GLenum usage, void* data)
+{
+	GLuint object;
+	glGenBuffers(1, &object);
+	glBindBuffer(bufferType, object);
+	glBufferData(bufferType, size, data, usage);
+	glBindBuffer(bufferType, 0);
+	return object;
+}
+
 LH_NAMESPACE_END

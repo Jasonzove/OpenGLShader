@@ -16,6 +16,7 @@
 #define __UTILS_H__
 
 #include"macros.h"
+#include "glew.h"
 
 LH_NAMESPACE_BEGIN
 
@@ -25,6 +26,8 @@ public:
 	static char* LoadFileContent(const char* const& filePath);
 
 	static unsigned char* LoadBMP(const char* path, int& width, int& height);
+
+	static GLuint CreateBufferObject(GLenum bufferType, GLsizeiptr size, GLenum usage, void* data = nullptr);
 };
 
 

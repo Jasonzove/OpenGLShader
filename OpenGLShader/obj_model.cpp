@@ -17,6 +17,8 @@ void ObjModel::Init(const char* const& modelFilePath)
 	std::vector<unsigned int> objIndexes;
 	//load model from file
 	char* fileContent = Utils::LoadFileContent(modelFilePath);
+
+	//decode model
 	std::stringstream ssFileContent(fileContent);
 	char szOneLine[256];
 	std::string temp;
@@ -73,9 +75,9 @@ void ObjModel::Init(const char* const& modelFilePath)
 					std::string normalIndexStr = vertexStr.substr(pos2 + 1, vertexStr.length() - (pos2 + 1));
 
 					VertexDefine vd;
-					vd.positionIndex = atoi(positionIndexStr.c_str());
-					vd.texcoordIndex = atoi(textcoordIndexStr.c_str());
-					vd.normalIndex = atoi(positionIndexStr.c_str());
+					vd.positionIndex = atoi(positionIndexStr.c_str()) - 1;
+					vd.texcoordIndex = atoi(textcoordIndexStr.c_str()) - 1;
+					vd.normalIndex = atoi(positionIndexStr.c_str()) - 1;
 
 					//去重
 					int nCurrentIndex = -1;
@@ -102,8 +104,24 @@ void ObjModel::Init(const char* const& modelFilePath)
 		}
 	}
 
-	//decode model
 	//convert to opengl vbo & ibo
+	int vertexCount = vertices.size();
+	VertexData* vertexes = new VertexData[vertexCount];
+	for (int i = 0; i < vertexCount; ++i)
+	{
+		memcpy(vertexes[i].position, positions[vertices[i].positionIndex].v, sizeof(float) * 3);
+		memcpy(vertexes[i].texcoord, texcoords[vertices[i].texcoordIndex].v, sizeof(float) * 2);
+		memcpy(vertexes[i].normal, normals[vertices[i].normalIndex].v, sizeof(float) * 3);
+	}
+	mVBO = Utils::CreateBufferObject(GL_ARRAY_BUFFER, sizeof(VertexData) * vertexCount, GL_STATIC_DRAW, vertexes);
+	DEL_ARRAY(vertexes);
+
+	mIndexCount = objIndexes.size();
+	unsigned int* indexes = new unsigned int[mIndexCount];
+	memcpy(indexes, &objIndexes[0], sizeof(unsigned int) * mIndexCount);
+	mIBO = Utils::CreateBufferObject(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mIndexCount, GL_STATIC_DRAW, indexes);
+	DEL_ARRAY(indexes);
+
 	DEL_PTR(fileContent); //此处设计不好，堆上分配的内存在LoadFileContent函数里面
 }
 
