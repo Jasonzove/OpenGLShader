@@ -96,7 +96,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	//获取属性位置
 	gpuProgram.DetectAttribute("pos");
-	gpuProgram.DetectAttribute("color");
+	gpuProgram.DetectAttribute("normal");
 	gpuProgram.DetectAttribute("texcoord");
 	gpuProgram.DetectUniform("M");
 	gpuProgram.DetectUniform("V");
