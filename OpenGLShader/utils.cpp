@@ -4,7 +4,7 @@
 
 LH_NAMESPACE_BEGIN
 
-const char* Utils::LoadFileContent(const char* const& filePath)
+char* Utils::LoadFileContent(const char* const& filePath)
 {
 	char* pFileContent = NULL;
 	FILE* pFile = fopen(filePath, "rb");
