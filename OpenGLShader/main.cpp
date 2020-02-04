@@ -117,7 +117,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	};
 	float *projection = CreatePerspective(50.0f,800.0f/600.0f,0.1f,1000.0f);
 
-	glm::mat4 modeMatrix = glm::translate(0.0f, 0.0f, -2.0f) * glm::rotate(30.0f, 0.0f, 0.0f, -1.0f);
+	glm::mat4 modeMatrix = glm::translate(0.0f, 0.0f, -2.0f) * glm::rotate(30.0f, 0.0f, 0.0f, -1.0f) * glm::rotate(30.0f, 0.0f, -1.0f, 0.0f);
 
 	glClearColor(41.0f/255.0f,  71.0f/255.0f, 121.0f / 255.0f, 1.0f);
 
@@ -125,7 +125,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	UpdateWindow(hwnd);
 
 	glEnable(GL_DEPTH_TEST);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	MSG msg;
 	while (true)
