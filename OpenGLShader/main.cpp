@@ -10,6 +10,7 @@
 #include "obj_model.h"
 #include "Glm/glm.hpp"
 #include "Glm/ext.hpp"
+#include "texture_2d.h"
 
 using namespace LH;
 
@@ -77,20 +78,12 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	wglMakeCurrent(dc, rc);
 
 	glewInit();
-	unsigned char*imageData = nullptr;
-	int width, height;
-	imageData = Utils::LoadBMP("Res/image/test.bmp", width, height);
+	//init texture
+	Texture2D mainTexture, secondTexture;
+	mainTexture.Init("Res/image/test.bmp");
+	secondTexture.Init("Res/image/wood.bmp");
 
 	//init program
-	GLuint mainTexture;
-	glGenTextures(1, &mainTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
-	glBindTexture(GL_TEXTURE_2D,0);
-
 	GPUProgram gpuProgram;
 	gpuProgram.AttachShader(GL_VERTEX_SHADER, IDR_SHADER_MULTI_TEXTURE_VS);
 	gpuProgram.AttachShader(GL_FRAGMENT_SHADER, IDR_SHADER_MULTI_TEXTURE_FS);
@@ -104,6 +97,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	gpuProgram.DetectUniform("V");
 	gpuProgram.DetectUniform("P");
 	gpuProgram.DetectUniform("U_MainTexture");
+	gpuProgram.DetectUniform("U_SecondTexture");
 
 	//init model
 	ObjModel model;
@@ -146,7 +140,14 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		glUniformMatrix4fv(gpuProgram.GetLocation("V"), 1, GL_FALSE, identity);
 		glUniformMatrix4fv(gpuProgram.GetLocation("P"), 1, GL_FALSE, projection);
 		
+		//Œ∆¿Ì
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mainTexture.mTexture);
 		glUniform1i(gpuProgram.GetLocation("U_MainTexture"), 0);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, secondTexture.mTexture);
+		glUniform1i(gpuProgram.GetLocation("U_SecondTexture"), 1);
 
 		model.Bind(gpuProgram.GetLocation("pos"), gpuProgram.GetLocation("texcoord"), gpuProgram.GetLocation("normal"));
 		model.Draw();

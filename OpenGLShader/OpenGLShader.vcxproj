@@ -136,6 +136,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obj_model.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="texture_2d.cpp" />
+    <ClCompile Include="texture_base.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +152,8 @@
     <ClInclude Include="include\macros.h" />
     <ClInclude Include="include\obj_model.h" />
     <ClInclude Include="include\shader.h" />
+    <ClInclude Include="include\texture_2d.h" />
+    <ClInclude Include="include\texture_base.h" />
     <ClInclude Include="include\utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
