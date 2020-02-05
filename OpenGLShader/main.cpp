@@ -92,8 +92,8 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glBindTexture(GL_TEXTURE_2D,0);
 
 	GPUProgram gpuProgram;
-	gpuProgram.AttachShader(GL_VERTEX_SHADER, IDR_SHADER_SAMPLE_VS);
-	gpuProgram.AttachShader(GL_FRAGMENT_SHADER, IDR_SHADER_SAMPLE_FS);
+	gpuProgram.AttachShader(GL_VERTEX_SHADER, IDR_SHADER_MULTI_TEXTURE_VS);
+	gpuProgram.AttachShader(GL_FRAGMENT_SHADER, IDR_SHADER_MULTI_TEXTURE_FS);
 	gpuProgram.Link();
 
 	//获取属性位置

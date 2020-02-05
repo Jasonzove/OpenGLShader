@@ -41,6 +41,15 @@
     <None Include="Res\shader\sample.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
+    <None Include="Res\shader\multi_texture.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\multi_texture.vs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="shader_f.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\shader.h">

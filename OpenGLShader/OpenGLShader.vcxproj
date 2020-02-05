@@ -139,8 +139,11 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Res\shader\multi_texture.fs" />
+    <None Include="Res\shader\multi_texture.vs" />
     <None Include="Res\shader\sample.fs" />
     <None Include="Res\shader\sample.vs" />
+    <None Include="shader_f.bin" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\gpu_program.h" />
