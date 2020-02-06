@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fbo.cpp" />
     <ClCompile Include="gpu_program.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obj_model.cpp" />
@@ -148,6 +149,7 @@
     <None Include="shader_f.bin" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\fbo.h" />
     <ClInclude Include="include\gpu_program.h" />
     <ClInclude Include="include\macros.h" />
     <ClInclude Include="include\obj_model.h" />

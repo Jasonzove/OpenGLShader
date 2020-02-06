@@ -11,6 +11,7 @@
 #include "Glm/glm.hpp"
 #include "Glm/ext.hpp"
 #include "texture_2d.h"
+#include "fbo.h"
 
 using namespace LH;
 
@@ -103,6 +104,12 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	ObjModel model;
 	model.Init("Res/model/Cube.obj");
 
+	//init FBO
+	FBO fbo;
+	fbo.AttachColorBuffer("colorBuffer", GL_COLOR_ATTACHMENT0, GL_RGBA, 256, 256);
+	fbo.AttachDepthBuffer("depthBuffer", 256, 256);
+	fbo.Finish();
+
 	float identity[] = {
 		1.0f,0,0,0,
 		0,1.0f,0,0,
@@ -133,6 +140,13 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+		//fbo
+		fbo.Bind();
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fbo.UnBind();
+
+		glClearColor(41.0f / 255.0f, 71.0f / 255.0f, 121.0f / 255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(gpuProgram.mProgram);
@@ -142,7 +156,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		
 		//Œ∆¿Ì
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mainTexture.mTexture);
+		glBindTexture(GL_TEXTURE_2D, fbo.GetBuffer("colorBuffer"));
 		glUniform1i(gpuProgram.GetLocation("U_MainTexture"), 0);
 
 		glActiveTexture(GL_TEXTURE1);
