@@ -1,16 +1,19 @@
-attribute vec3 pos;
-attribute vec4 color;
-attribute vec4 texcoord;
+#version 460
+
+in vec3 pos;
+in vec4 color;
+in vec4 texcoord;
 
 uniform mat4 M;
 uniform mat4 P;
 uniform mat4 V;
 
-varying vec4 V_Color;
-varying vec4 V_Texcoord;
+out vec4 T_color;
+out vec4 T_texcoord;
+
 void main()
 {
-	V_Color=color;
-	V_Texcoord=texcoord;
+	T_color=color;
+	T_texcoord=texcoord;
 	gl_Position=P*V*M*vec4(pos,1.0);
 }

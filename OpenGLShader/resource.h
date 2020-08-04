@@ -1,9 +1,9 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by OpenGLShader.rc
+// Microsoft Visual C++ 生成的包含文件。
+// 供 OpenGLShader.rc 使用
 //
-#define IDR_SHADER_SAMPLE_VS            101
-#define IDR_SHADER_SAMPLE_FS            102
+#define IDR_SHADER_sample_vs            101
+#define IDR_SHADER_sample_fs            102
 
 // Next default values for new objects
 // 

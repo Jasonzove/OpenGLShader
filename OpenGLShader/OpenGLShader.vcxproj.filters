@@ -16,13 +16,19 @@
     <Filter Include="Resource Files\shader">
       <UniqueIdentifier>{b530e97b-1038-4b2c-a607-676e208f0439}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\shader">
+      <UniqueIdentifier>{947190fc-9c8e-49bb-9181-ede6c9a2b3d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shader">
+      <UniqueIdentifier>{2a205dab-298a-4ad3-b175-a7e5f5272773}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="shader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -34,11 +40,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shader.h">
+      <Filter>Header Files\shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

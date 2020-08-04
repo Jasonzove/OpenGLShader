@@ -19,7 +19,8 @@ LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 char* LoadFileContent(const char*path)
 {
 	char *pFileContent = NULL;
-	FILE*pFile = fopen(path, "rb");
+	FILE* pFile = nullptr;
+	fopen_s(&pFile,path, "rb");
 	if (pFile)
 	{
 		fseek(pFile, 0, SEEK_END);
@@ -36,16 +37,14 @@ char* LoadFileContent(const char*path)
 	return pFileContent;
 }
 
-GLuint CreateProgram(const char*vsPath,const char*fsPath)
+GLuint CreateProgram(const char*vsShderCode,const char*fsShaderCode)
 {
 	GLuint program=glCreateProgram();
 	GLuint vsShader, fsShader;
 	vsShader = glCreateShader(GL_VERTEX_SHADER);
 	fsShader = glCreateShader(GL_FRAGMENT_SHADER);
-	const char*vsCode = LoadFileContent(vsPath);
-	const char*fsCode = LoadFileContent(fsPath);
-	glShaderSource(vsShader, 1, &vsCode, nullptr);
-	glShaderSource(fsShader, 1, &fsCode, nullptr);
+	glShaderSource(vsShader, 1, &vsShderCode, nullptr);
+	glShaderSource(fsShader, 1, &fsShaderCode, nullptr);
 	glCompileShader(vsShader);
 	glCompileShader(fsShader);
 	glAttachShader(program, vsShader);
@@ -77,7 +76,8 @@ float* CreatePerspective(float fov, float aspect, float zNear, float zFar)
 unsigned char* LoadBMP(const char*path, int &width, int &height)
 {
 	unsigned char*imageData=nullptr;
-	FILE *pFile = fopen(path, "rb");
+	FILE* pFile = nullptr;
+	fopen_s(&pFile ,path, "rb");
 	if (pFile)
 	{
 		BITMAPFILEHEADER bfh;
@@ -119,12 +119,12 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	wndClass.hIconSm = NULL;
 	wndClass.hInstance = hInstance;
 	wndClass.lpfnWndProc=GLWindowProc;
-	wndClass.lpszClassName = L"OpenGL";
+	wndClass.lpszClassName = "OpenGL";
 	wndClass.lpszMenuName = NULL;
 	wndClass.style = CS_VREDRAW | CS_HREDRAW;
 	ATOM atom = RegisterClassEx(&wndClass);
 
-	HWND hwnd = CreateWindowEx(NULL, L"OpenGL", L"RenderWindow", WS_OVERLAPPEDWINDOW, 100, 100, 800, 600, NULL, NULL, hInstance, NULL);
+	HWND hwnd = CreateWindowEx(NULL, "OpenGL", "RenderWindow", WS_OVERLAPPEDWINDOW, 100, 100, 800, 600, NULL, NULL, hInstance, NULL);
 	HDC dc = GetDC(hwnd);
 	PIXELFORMATDESCRIPTOR pfd;
 	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -157,7 +157,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
 	glBindTexture(GL_TEXTURE_2D,0);
 
-	GLuint program = CreateProgram("Res/shader/sample.vs", "Res/shader/sample.fs");
+	GLuint program = CreateProgram(Shader::GetShaderCode(IDR_SHADER_sample_vs), Shader::GetShaderCode(IDR_SHADER_sample_fs));
 	GLint posLoc, colorLoc,texcoordLoc,mLoc,vLoc,ploc,textureLoc;
 	posLoc = glGetAttribLocation(program, "pos");
 	colorLoc = glGetAttribLocation(program, "color");
