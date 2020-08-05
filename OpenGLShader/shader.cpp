@@ -1,9 +1,11 @@
 #include <windows.h>
 #include "shader.h"
 
+LH_NAMESPACE_BEGIN
+
 std::unordered_map<int, const char*> Shader::mShaderCodes = std::unordered_map<int, const char*>();
 
-const char* const& Shader::GetShaderCode(int id)
+const char* Shader::GetShaderCode(const int& id)
 {
 	if (mShaderCodes.end() != mShaderCodes.find(id))
 	{
@@ -20,7 +22,9 @@ const char* const& Shader::GetShaderCode(int id)
 
 	const char* data = nullptr;
 	HGLOBAL rcData = ::LoadResource(handle, rc);
+
 	data = static_cast<const char*>(::LockResource(rcData));
+	
 	if (data == nullptr)
 	{
 		throw std::exception("failed to load shader resource file!");
@@ -30,3 +34,5 @@ const char* const& Shader::GetShaderCode(int id)
 
 	return mShaderCodes[id];
 }
+
+LH_NAMESPACE_END
