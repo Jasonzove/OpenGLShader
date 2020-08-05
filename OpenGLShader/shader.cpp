@@ -1,8 +1,6 @@
 #include <windows.h>
 #include "shader.h"
 
-LH_NAMESPACE_BEGIN
-
 std::unordered_map<int, const char*> Shader::mShaderCodes = std::unordered_map<int, const char*>();
 
 const char* Shader::GetShaderCode(const int& id)
@@ -34,5 +32,3 @@ const char* Shader::GetShaderCode(const int& id)
 
 	return mShaderCodes[id];
 }
-
-LH_NAMESPACE_END
