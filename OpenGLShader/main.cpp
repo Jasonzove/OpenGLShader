@@ -2,8 +2,10 @@
 #include "glew.h"
 #include <stdio.h>
 #include <math.h>
+
 #include "shader.h"
 #include "resource.h"
+#include "GPUProgram.h"
 
 LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -35,26 +37,6 @@ char* LoadFileContent(const char*path)
 		fclose(pFile);
 	}
 	return pFileContent;
-}
-
-GLuint CreateProgram(const char*vsShderCode,const char*fsShaderCode)
-{
-	GLuint program=glCreateProgram();
-	GLuint vsShader, fsShader;
-	vsShader = glCreateShader(GL_VERTEX_SHADER);
-	fsShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(vsShader, 1, &vsShderCode, nullptr);
-	glShaderSource(fsShader, 1, &fsShaderCode, nullptr);
-	glCompileShader(vsShader);
-	glCompileShader(fsShader);
-	glAttachShader(program, vsShader);
-	glAttachShader(program, fsShader);
-	glLinkProgram(program);
-	glDetachShader(program, vsShader);
-	glDetachShader(program, fsShader);
-	glDeleteShader(vsShader);
-	glDeleteShader(fsShader);
-	return program;
 }
 
 float* CreatePerspective(float fov, float aspect, float zNear, float zFar)
@@ -157,16 +139,23 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
 	glBindTexture(GL_TEXTURE_2D,0);
 
-	GLuint program = CreateProgram(Shader::GetShaderCode(IDR_SHADER_sample_vs), Shader::GetShaderCode(IDR_SHADER_sample_fs));
-	GLint posLoc, colorLoc,texcoordLoc,mLoc,vLoc,ploc,textureLoc;
-	posLoc = glGetAttribLocation(program, "pos");
-	colorLoc = glGetAttribLocation(program, "color");
-	texcoordLoc = glGetAttribLocation(program, "texcoord");
+	GPUProgram program;
+	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_sample_vs));
+	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_sample_fs));
+	if (!program.Link())
+	{
+		printf("link program failed!\n");
+	}
 
-	mLoc = glGetUniformLocation(program,"M");
-	vLoc = glGetUniformLocation(program,"V");
-	ploc = glGetUniformLocation(program, "P");
-	textureLoc = glGetUniformLocation(program, "U_MainTexture");
+	GLint posLoc, colorLoc,texcoordLoc,mLoc,vLoc,ploc,textureLoc;
+	posLoc = glGetAttribLocation(program.ProgramId(), "pos");
+	colorLoc = glGetAttribLocation(program.ProgramId(), "color");
+	texcoordLoc = glGetAttribLocation(program.ProgramId(), "texcoord");
+
+	mLoc = glGetUniformLocation(program.ProgramId(),"M");
+	vLoc = glGetUniformLocation(program.ProgramId(),"V");
+	ploc = glGetUniformLocation(program.ProgramId(), "P");
+	textureLoc = glGetUniformLocation(program.ProgramId(), "U_MainTexture");
 
 
 	float identity[] = {
@@ -259,7 +248,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(program);
+		program.Bind();
 		glUniformMatrix4fv(mLoc, 1,GL_FALSE,identity);
 		glUniformMatrix4fv(vLoc, 1, GL_FALSE, identity);
 		glUniformMatrix4fv(ploc, 1, GL_FALSE, projection);
@@ -280,7 +269,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_SHORT, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		glUseProgram(0);
+		program.UnBind();
 		SwapBuffers(dc);
 	}
 	return 0;

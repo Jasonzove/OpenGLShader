@@ -22,6 +22,12 @@
     <Filter Include="Source Files\shader">
       <UniqueIdentifier>{2a205dab-298a-4ad3-b175-a7e5f5272773}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Program">
+      <UniqueIdentifier>{f908636b-872a-4ea2-8df9-51c24fd99d9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program">
+      <UniqueIdentifier>{be939cb3-b288-4240-aeac-8063f68f4da9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -29,6 +35,9 @@
     </ClCompile>
     <ClCompile Include="shader.cpp">
       <Filter>Source Files\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="GPUProgram.cpp">
+      <Filter>Source Files\Program</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +54,9 @@
     </ClInclude>
     <ClInclude Include="include\shader.h">
       <Filter>Header Files\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GPUProgram.h">
+      <Filter>Header Files\Program</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
