@@ -6,6 +6,7 @@
 #include "shader.h"
 #include "resource.h"
 #include "GPUProgram.h"
+#include "utils.h"
 
 LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -16,27 +17,6 @@ LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return DefWindowProc(hwnd,msg,wParam,lParam);
-}
-
-char* LoadFileContent(const char*path)
-{
-	char *pFileContent = NULL;
-	FILE* pFile = nullptr;
-	fopen_s(&pFile,path, "rb");
-	if (pFile)
-	{
-		fseek(pFile, 0, SEEK_END);
-		int nLen = ftell(pFile);
-		if (nLen > 0)
-		{
-			rewind(pFile);
-			pFileContent = new char[nLen + 1];
-			fread(pFileContent,1,nLen,pFile);
-			pFileContent[nLen] = '\0';
-		}
-		fclose(pFile);
-	}
-	return pFileContent;
 }
 
 float* CreatePerspective(float fov, float aspect, float zNear, float zFar)
@@ -54,40 +34,6 @@ float* CreatePerspective(float fov, float aspect, float zNear, float zFar)
 	matrix[14] = (2.0f*zNear*zFar) / (zNear - zFar);
 	return matrix;
 }
-
-unsigned char* LoadBMP(const char*path, int &width, int &height)
-{
-	unsigned char*imageData=nullptr;
-	FILE* pFile = nullptr;
-	fopen_s(&pFile ,path, "rb");
-	if (pFile)
-	{
-		BITMAPFILEHEADER bfh;
-		fread(&bfh, sizeof(BITMAPFILEHEADER), 1, pFile);
-		if (bfh.bfType==0x4D42)
-		{
-			BITMAPINFOHEADER bih;
-			fread(&bih, sizeof(BITMAPINFOHEADER), 1, pFile);
-			width = bih.biWidth;
-			height = bih.biHeight;
-			int pixelCount = width*height * 3;
-			imageData = new unsigned char[pixelCount];
-			fseek(pFile, bfh.bfOffBits, SEEK_SET);
-			fread(imageData, 1, pixelCount, pFile);
-
-			unsigned char temp;
-			for (int i=0;i<pixelCount;i+=3)
-			{
-				temp = imageData[i+2];
-				imageData[i + 2] = imageData[i];
-				imageData[i] = temp;
-			}
-		}
-		fclose(pFile);
-	}
-	return imageData;
-}
-
 
 INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
@@ -126,18 +72,6 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	wglMakeCurrent(dc, rc);
 
 	glewInit();
-	unsigned char*imageData = nullptr;
-	int width, height;
-	imageData = LoadBMP("Res/image/test.bmp", width, height);
-
-	GLuint mainTexture;
-	glGenTextures(1, &mainTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
-	glBindTexture(GL_TEXTURE_2D,0);
 
 	GPUProgram program;
 	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_sample_vs));
@@ -146,6 +80,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	{
 		printf("link program failed!\n");
 	}
+	GLuint mainTexture = CreateTexture("Res/image/test.bmp");
 
 	float identity[] = {
 		1.0f,0,0,0,
@@ -154,8 +89,6 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		0,0,0,1.0f
 	};
 	float *projection = CreatePerspective(50.0f,800.0f/600.0f,0.1f,1000.0f);
-
-	//auto aa = Shader::GetShaderCode(IDR_SHADER_SAMPLE_VS);
 
 	struct Vertex
 	{
@@ -207,16 +140,9 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	vertex[3].texcoord[1] = 1.0f;
 
 	unsigned short indexes[] = {0,1,2,3};
-	GLuint vbo,ibo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4, vertex, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * 4, indexes, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	GLuint vbo,ebo;
+	vbo = CreateGPUBufferObject(GL_ARRAY_BUFFER, sizeof(vertex), GL_STATIC_DRAW, vertex);
+	ebo = CreateGPUBufferObject(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexes), GL_STATIC_DRAW, indexes);
 
 	glClearColor(41.0f/255.0f,  71.0f/255.0f, 121.0f / 255.0f, 1.0f);
 
@@ -249,7 +175,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		program.SetAttribPointer("texcoord", 4, sizeof(Vertex), (void*)(sizeof(float) * 7));
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_SHORT, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
