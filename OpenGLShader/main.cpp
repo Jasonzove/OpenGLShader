@@ -147,17 +147,6 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		printf("link program failed!\n");
 	}
 
-	GLint posLoc, colorLoc,texcoordLoc,mLoc,vLoc,ploc,textureLoc;
-	posLoc = glGetAttribLocation(program.ProgramId(), "pos");
-	colorLoc = glGetAttribLocation(program.ProgramId(), "color");
-	texcoordLoc = glGetAttribLocation(program.ProgramId(), "texcoord");
-
-	mLoc = glGetUniformLocation(program.ProgramId(),"M");
-	vLoc = glGetUniformLocation(program.ProgramId(),"V");
-	ploc = glGetUniformLocation(program.ProgramId(), "P");
-	textureLoc = glGetUniformLocation(program.ProgramId(), "U_MainTexture");
-
-
 	float identity[] = {
 		1.0f,0,0,0,
 		0,1.0f,0,0,
@@ -249,21 +238,16 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		program.Bind();
-		glUniformMatrix4fv(mLoc, 1,GL_FALSE,identity);
-		glUniformMatrix4fv(vLoc, 1, GL_FALSE, identity);
-		glUniformMatrix4fv(ploc, 1, GL_FALSE, projection);
-		
-		glUniform1i(textureLoc, 0);
+		program.SetUniformfv("M", identity, 16);
+		program.SetUniformfv("V", identity, 16);
+		program.SetUniformfv("P", projection, 16);
+		program.SetTexture("U_MainTexture", 0, 1);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glEnableVertexAttribArray(posLoc);
-		glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-
-		glEnableVertexAttribArray(colorLoc);
-		glVertexAttribPointer(colorLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float)*3));
-
-		glEnableVertexAttribArray(texcoordLoc);
-		glVertexAttribPointer(texcoordLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float) * 7));
+		program.SetAttribPointer("pos", 3, sizeof(Vertex), (void*)0);
+		program.SetAttribPointer("color", 4, sizeof(Vertex), (void*)(sizeof(float) * 3));
+		program.SetAttribPointer("texcoord", 4, sizeof(Vertex), (void*)(sizeof(float) * 7));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_SHORT, 0);

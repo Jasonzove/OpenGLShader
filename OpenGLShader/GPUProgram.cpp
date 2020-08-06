@@ -80,7 +80,68 @@ void GPUProgram::AttachShader(const ShaderType& shaderType, const char* const& s
 	mShaderCodes.insert(std::make_pair(shaderType, shaderCode));
 }
 
-GLuint GPUProgram::ProgramId() const
+void GPUProgram::SetUniformfv(const char* const& pLocation, const float* const pData, const int& size)
+{
+	GLint location;
+	location = glGetUniformLocation(mProgram, pLocation);
+	if (location < 0)
+	{
+		printf("GPUProgram::SetUniformf():get location failed--%s:\n", pLocation);
+		return;
+	}
+
+	switch (size)
+	{
+	case 1:
+		glUniform1fv(location, 1, pData);
+		break;
+	case 2:
+		glUniform2fv(location, 1, pData);
+		break;
+	case 4:
+		glUniform4fv(location, 1, pData);
+		break;
+	case 16:
+		glUniformMatrix4fv(location, 1, GL_FALSE, pData);
+	default:
+		break;
+	}
+}
+
+void GPUProgram::SetTexture(const char* const& pTexLocation, const int& id, const int& size)
+{
+	GLint location = glGetUniformLocation(mProgram, pTexLocation);
+	if (location < 0)
+	{
+		printf("GPUProgram::SetTexture(): get texture location faild--%s\n", pTexLocation);
+		return;
+	}
+
+	switch (size)
+	{
+	case 1:
+		glUniform1i(location, id);
+		break;
+	default:
+		break;
+	}
+}
+
+void GPUProgram::SetAttribPointer(const char* const& pLocation, const int& size, const int& stride, const void* const& pointer)
+{
+	GLint location;
+	location = glGetAttribLocation(mProgram, pLocation);
+	if (location < 0)
+	{
+		printf("GPUProgram::SetUniformf():get location failed--%s:\n", pLocation);
+		return;
+	}
+
+	glEnableVertexAttribArray(location);
+	glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, stride, pointer);
+}
+
+GLuint GPUProgram::ID() const
 {
 	return mProgram;
 }

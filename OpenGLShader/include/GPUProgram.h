@@ -32,11 +32,14 @@ public:
 public:
 	GPUProgram();
 	~GPUProgram();
+	GLuint ID() const;
 	void Bind();
 	void UnBind();
 	bool Link();
 	void AttachShader(const ShaderType& shaderType, const char* const& shaderCode);
-	GLuint ProgramId() const;
+	void SetUniformfv(const char* const& pLocation, const float* const pData, const int& size);
+	void SetTexture(const char* const& pTexLocation, const int& id, const int& size);
+	void SetAttribPointer(const char* const& pLocation, const int& size, const int& stride, const void* const& pointer);
 private:
 	GLuint CompileShader_i(const ShaderType& shaderType, const char* const& shaderCode);
 	void DetachShader_i();
