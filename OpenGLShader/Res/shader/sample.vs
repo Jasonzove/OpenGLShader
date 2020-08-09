@@ -1,19 +1,16 @@
-#version 460
+#version 460 core
 
 in vec3 pos;
-in vec4 color;
-in vec4 texcoord;
+in vec2 texcoord;
 
 uniform mat4 M;
 uniform mat4 P;
 uniform mat4 V;
 
-out vec4 T_color;
-out vec4 T_texcoord;
+out vec2 T_texcoord;
 
 void main()
 {
-	T_color=color;
-	T_texcoord=texcoord;
+	T_texcoord = texcoord;
 	gl_Position=P*V*M*vec4(pos,1.0);
 }

@@ -24,14 +24,17 @@ struct VertexData
 class ObjMoel
 {
 public:
+	ObjMoel();
+	~ObjMoel();
 	bool Load(const char* const& pFilePath);
+	void Bind(const GLuint& posLocation);
+	void Bind(const GLuint& posLocation, const GLuint& texcoordLocation);
 	void Bind(const GLuint& posLocation, const GLuint& texcoordLocation, const GLuint& normalLocation);
 	void Draw();
 private:
 	GLuint mVBO;
 	GLuint mEBO;
-	int mVertexCount;
-	int mIndexCount;
+	unsigned int mElementCount;
 };
 
 #endif
