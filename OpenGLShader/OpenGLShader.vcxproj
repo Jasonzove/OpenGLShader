@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="GPUProgram.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="model_obj.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GPUProgram.h" />
+    <ClInclude Include="include\model_obj.h" />
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\utils.h" />
     <ClInclude Include="resource.h" />

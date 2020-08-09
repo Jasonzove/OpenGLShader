@@ -12,9 +12,26 @@
 #ifndef __MODEL_OBJ_H__
 #define __MODEL_OBJ_H__
 
+#include "glew.h"
+
+struct VertexData
+{
+	float position[3];
+	float texcoord[2];
+	float normal[3];
+};
+
 class ObjMoel
 {
-
+public:
+	bool Load(const char* const& pFilePath);
+	void Bind(const GLuint& posLocation, const GLuint& texcoordLocation, const GLuint& normalLocation);
+	void Draw();
+private:
+	GLuint mVBO;
+	GLuint mEBO;
+	int mVertexCount;
+	int mIndexCount;
 };
 
 #endif

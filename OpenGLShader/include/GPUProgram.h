@@ -29,6 +29,12 @@ public:
 		COMPUTE_SHADER,
 	};
 
+	enum LocationType
+	{
+		ATTRIBUTE = 0,
+		UNIFORM,
+	};
+
 public:
 	GPUProgram();
 	~GPUProgram();
@@ -40,6 +46,8 @@ public:
 	void SetUniformfv(const char* const& pLocation, const float* const pData, const int& size);
 	void SetTexture(const char* const& pTexLocation, const int& id, const int& size);
 	void SetAttribPointer(const char* const& pLocation, const int& size, const int& stride, const void* const& pointer);
+	GLint GetLocation(const char* const& pLocation, const LocationType& type);
+
 private:
 	GLuint CompileShader_i(const ShaderType& shaderType, const char* const& shaderCode);
 	void DetachShader_i();
@@ -47,6 +55,7 @@ private:
 private:
 	GLuint mProgram;
 	std::list<GLuint> mShaderIDs;
+	std::unordered_map<const char*, GLint> mLocations;
 	std::unordered_map<ShaderType, const char*> mShaderCodes;
 };
 

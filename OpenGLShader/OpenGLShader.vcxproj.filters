@@ -34,6 +34,12 @@
     <Filter Include="Source Files\tool">
       <UniqueIdentifier>{b6e626a7-a047-4a30-9293-ec897a32cca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\model">
+      <UniqueIdentifier>{2ec4ab14-fb7d-41ab-ba95-087e701240f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\model">
+      <UniqueIdentifier>{a2d18b45-46f2-4706-89e2-04eacddb733a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -47,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="model_obj.cpp">
+      <Filter>Source Files\model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +78,9 @@
     </ClInclude>
     <ClInclude Include="include\utils.h">
       <Filter>Header Files\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="include\model_obj.h">
+      <Filter>Header Files\model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

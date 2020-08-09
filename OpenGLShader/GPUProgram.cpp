@@ -83,12 +83,7 @@ void GPUProgram::AttachShader(const ShaderType& shaderType, const char* const& s
 void GPUProgram::SetUniformfv(const char* const& pLocation, const float* const pData, const int& size)
 {
 	GLint location;
-	location = glGetUniformLocation(mProgram, pLocation);
-	if (location < 0)
-	{
-		printf("GPUProgram::SetUniformf():get location failed--%s:\n", pLocation);
-		return;
-	}
+	location = GetLocation(pLocation, LocationType::UNIFORM);
 
 	switch (size)
 	{
@@ -110,12 +105,7 @@ void GPUProgram::SetUniformfv(const char* const& pLocation, const float* const p
 
 void GPUProgram::SetTexture(const char* const& pTexLocation, const int& id, const int& size)
 {
-	GLint location = glGetUniformLocation(mProgram, pTexLocation);
-	if (location < 0)
-	{
-		printf("GPUProgram::SetTexture(): get texture location faild--%s\n", pTexLocation);
-		return;
-	}
+	GLint location = GetLocation(pTexLocation, LocationType::UNIFORM);
 
 	switch (size)
 	{
@@ -130,15 +120,41 @@ void GPUProgram::SetTexture(const char* const& pTexLocation, const int& id, cons
 void GPUProgram::SetAttribPointer(const char* const& pLocation, const int& size, const int& stride, const void* const& pointer)
 {
 	GLint location;
-	location = glGetAttribLocation(mProgram, pLocation);
-	if (location < 0)
-	{
-		printf("GPUProgram::SetUniformf():get location failed--%s:\n", pLocation);
-		return;
-	}
+	location = GetLocation(pLocation, LocationType::ATTRIBUTE);
 
 	glEnableVertexAttribArray(location);
 	glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, stride, pointer);
+}
+
+GLint GPUProgram::GetLocation(const char* const& pLocation, const LocationType& type)
+{
+	auto iter = mLocations.find(pLocation);
+	if (iter != mLocations.end())
+	{
+		return iter->second;
+	}
+
+	GLint location = -1;
+	switch (type)
+	{
+	case ATTRIBUTE:
+		location = glGetAttribLocation(mProgram,pLocation);
+		break;
+	case UNIFORM:
+		location = glGetUniformLocation(mProgram, pLocation);
+		break;
+	default:
+		break;
+	}
+
+	if (-1 == location)
+	{
+		printf("can not get location:%s\n", pLocation);
+		return -1;
+	}
+
+	mLocations.insert(std::make_pair(pLocation, location));
+	return location;
 }
 
 GLuint GPUProgram::ID() const
