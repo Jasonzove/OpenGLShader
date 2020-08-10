@@ -1,11 +1,11 @@
 #version 460 core
 
 in vec2 T_texcoord;
-in vec4 T_color;
 
 uniform sampler2D U_MainTexture;
+uniform sampler2D U_SecondaryTexture;
 
 void main()
 {
-	gl_FragColor = T_color*texture2D(U_MainTexture,T_texcoord);
+	gl_FragColor = vec4(vec3(texture2D(U_MainTexture,T_texcoord).rgb)*vec3(texture2D(U_SecondaryTexture, T_texcoord).rgb),1.0);
 }

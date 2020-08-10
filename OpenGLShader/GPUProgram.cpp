@@ -103,14 +103,26 @@ void GPUProgram::SetUniformfv(const char* const& pLocation, const float* const p
 	}
 }
 
-void GPUProgram::SetTexture(const char* const& pTexLocation, const int& id, const int& size)
+void GPUProgram::SetTexture(const char* const& pSampler, const int& textureId, const TextureUint& textureUint, const int& size)
 {
-	GLint location = GetLocation(pTexLocation, LocationType::UNIFORM);
+	GLint location = GetLocation(pSampler, LocationType::UNIFORM);
 
 	switch (size)
 	{
 	case 1:
-		glUniform1i(location, id);
+		switch (textureUint)
+		{
+		case TEXTURE0:
+			glActiveTexture(GL_TEXTURE0);
+			break;
+		case TEXTURE1:
+			glActiveTexture(GL_TEXTURE1);
+			break;
+		default:
+			break;
+		}
+		glBindTexture(GL_TEXTURE_2D, textureId); //绑定纹理插槽和纹理对象
+		glUniform1i(location, textureUint); //指定采样器和纹理插槽
 		break;
 	default:
 		break;

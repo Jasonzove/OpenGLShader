@@ -92,7 +92,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		printf("link program failed!\n");
 	}
 	GLuint mainTexture = CreateTexture("./Res/image/test.bmp");
-
+	GLuint secondaryTexture = CreateTexture("./Res/image/wood.bmp");
 	
 	glm::mat4 viewMat = glm::mat4();
 	glm::mat4 modelMat = glm::translate<float>(0.0f, 0.0f, -4.0f)*glm::rotate<float>(45.0f, 0.0f, 1.0f, 0.0f);
@@ -125,7 +125,8 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		program.SetUniformfv("M", glm::value_ptr(modelMat), 16);
 		program.SetUniformfv("V", glm::value_ptr(viewMat), 16);
 		program.SetUniformfv("P", glm::value_ptr(projectMat), 16);
-		program.SetTexture("U_MainTexture", 0, 1);
+		program.SetTexture("U_MainTexture", mainTexture, GPUProgram::TEXTURE0, 1);
+		program.SetTexture("U_SecondaryTexture", secondaryTexture, GPUProgram::TEXTURE1, 1);
 
 		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE),
 			program.GetLocation("texcoord", GPUProgram::ATTRIBUTE));

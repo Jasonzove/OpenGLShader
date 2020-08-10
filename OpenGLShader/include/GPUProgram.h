@@ -35,6 +35,12 @@ public:
 		UNIFORM,
 	};
 
+	enum TextureUint
+	{
+		TEXTURE0 = 0, //纹理插槽，从0开始
+		TEXTURE1,
+	};
+
 public:
 	GPUProgram();
 	~GPUProgram();
@@ -44,7 +50,7 @@ public:
 	bool Link();
 	void AttachShader(const ShaderType& shaderType, const char* const& shaderCode);
 	void SetUniformfv(const char* const& pLocation, const float* const pData, const int& size);
-	void SetTexture(const char* const& pTexLocation, const int& id, const int& size);
+	void SetTexture(const char* const& pSampler, const int& textureId, const TextureUint& textureUint, const int& size);
 	void SetAttribPointer(const char* const& pLocation, const int& size, const int& stride, const void* const& pointer);
 	GLint GetLocation(const char* const& pLocation, const LocationType& type);
 
