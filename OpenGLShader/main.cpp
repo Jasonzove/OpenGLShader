@@ -3,11 +3,14 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "Glm/glm.hpp"
+#include "Glm/ext.hpp"
 #include "shader.h"
 #include "resource.h"
 #include "GPUProgram.h"
 #include "utils.h"
 #include "model_obj.h"
+
 
 LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -75,7 +78,11 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glewInit();
 
 	ObjMoel obj;
-	obj.Load("./Res/model/Cube.obj");
+	if (!obj.Load("./Res/model/Cube.obj"))
+	{
+		printf("load obj model failed!\n");
+		return -1;
+	}
 
 	GPUProgram program;
 	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_sample_vs));
@@ -87,19 +94,18 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	GLuint mainTexture = CreateTexture("./Res/image/test.bmp");
 
 	
-
-	float identity[] = {
-		1.0f,0,0,0,
-		0,1.0f,0,0,
-		0,0,1.0f,0,
-		0,0,0,1.0f
-	};
-	float *projection = CreatePerspective(50.0f,800.0f/600.0f,0.1f,1000.0f);
+	glm::mat4 viewMat = glm::mat4();
+	glm::mat4 modelMat = glm::translate<float>(0.0f, 0.0f, -4.0f)*glm::rotate<float>(45.0f, 0.0f, 1.0f, 0.0f);
+	glm::mat4 projectMat = glm::perspective<float>(45.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	glClearColor(41.0f/255.0f,  71.0f/255.0f, 121.0f / 255.0f, 1.0f);
 
 	ShowWindow(hwnd, SW_SHOW);
 	UpdateWindow(hwnd);
+
+	//一些开关
+	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	MSG msg;
 	while (true)
@@ -113,12 +119,12 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		program.Bind();
-		program.SetUniformfv("M", identity, 16);
-		program.SetUniformfv("V", identity, 16);
-		program.SetUniformfv("P", projection, 16);
+		program.SetUniformfv("M", glm::value_ptr(modelMat), 16);
+		program.SetUniformfv("V", glm::value_ptr(viewMat), 16);
+		program.SetUniformfv("P", glm::value_ptr(projectMat), 16);
 		program.SetTexture("U_MainTexture", 0, 1);
 
 		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE),
