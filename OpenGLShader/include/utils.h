@@ -28,6 +28,8 @@ GLuint CreateGPUBufferObject(GLenum targetType, GLsizeiptr size, GLenum usage, c
 
 GLuint CreateTexture(const char* const& filePath);
 
+float* CreatePerspective(float fov, float aspect, float zNear, float zFar);
+
 void CheckGLError(const char* const& pFile, const int& line);
 
 #define GL_CHECK(x) \

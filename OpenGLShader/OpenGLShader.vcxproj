@@ -137,18 +137,24 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="full_screen_quad.cpp" />
     <ClCompile Include="GPUProgram.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="model_fbo.cpp" />
     <ClCompile Include="model_obj.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Res\shader\full_screen_quad.fs" />
+    <None Include="Res\shader\full_screen_quad.vs" />
     <None Include="Res\shader\sample.fs" />
     <None Include="Res\shader\sample.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\full_screen_quad.h" />
     <ClInclude Include="include\GPUProgram.h" />
+    <ClInclude Include="include\model_fbo.h" />
     <ClInclude Include="include\model_obj.h" />
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\utils.h" />

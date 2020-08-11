@@ -57,12 +57,24 @@
     <ClCompile Include="model_obj.cpp">
       <Filter>Source Files\model</Filter>
     </ClCompile>
+    <ClCompile Include="model_fbo.cpp">
+      <Filter>Source Files\model</Filter>
+    </ClCompile>
+    <ClCompile Include="full_screen_quad.cpp">
+      <Filter>Source Files\model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Res\shader\sample.fs">
       <Filter>Resource Files\shader</Filter>
     </None>
     <None Include="Res\shader\sample.vs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\full_screen_quad.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\full_screen_quad.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
   </ItemGroup>
@@ -80,6 +92,12 @@
       <Filter>Header Files\tool</Filter>
     </ClInclude>
     <ClInclude Include="include\model_obj.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\model_fbo.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\full_screen_quad.h">
       <Filter>Header Files\model</Filter>
     </ClInclude>
   </ItemGroup>

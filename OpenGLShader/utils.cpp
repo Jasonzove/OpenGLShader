@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <math.h>
 #include <stdio.h>
 #include "utils.h"
 
@@ -221,4 +222,20 @@ void CheckGLError(const char* const& pFile, const int& line)
 			break;
 		}
 	}
+}
+
+float* CreatePerspective(float fov, float aspect, float zNear, float zFar)
+{
+	float* matrix = new float[16];
+	float half = fov / 2.0f;
+	float randiansOfHalf = (half / 180.0f) * 3.14f;
+	float yscale = cos(randiansOfHalf) / sin(randiansOfHalf);
+	float xscale = yscale / aspect;
+	memset(matrix, 0, sizeof(float) * 16);
+	matrix[0] = xscale;
+	matrix[5] = yscale;
+	matrix[10] = (zNear + zFar) / (zNear - zFar);
+	matrix[11] = -1.0f;
+	matrix[14] = (2.0f * zNear * zFar) / (zNear - zFar);
+	return matrix;
 }

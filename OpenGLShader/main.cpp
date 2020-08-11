@@ -1,8 +1,7 @@
 #include <windows.h>
-#include "glew.h"
 #include <stdio.h>
-#include <math.h>
 
+#include "glew.h"
 #include "Glm/glm.hpp"
 #include "Glm/ext.hpp"
 #include "shader.h"
@@ -10,6 +9,8 @@
 #include "GPUProgram.h"
 #include "utils.h"
 #include "model_obj.h"
+#include "model_fbo.h"
+#include "full_screen_quad.h"
 
 
 LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -21,22 +22,6 @@ LRESULT CALLBACK GLWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return DefWindowProc(hwnd,msg,wParam,lParam);
-}
-
-float* CreatePerspective(float fov, float aspect, float zNear, float zFar)
-{
-	float *matrix = new float[16];
-	float half = fov / 2.0f;
-	float randiansOfHalf = (half / 180.0f)*3.14f;
-	float yscale = cos(randiansOfHalf) / sin(randiansOfHalf);
-	float xscale = yscale / aspect;
-	memset(matrix, 0, sizeof(float) * 16);
-	matrix[0] = xscale;
-	matrix[5] = yscale;
-	matrix[10] = (zNear + zFar) / (zNear - zFar);
-	matrix[11] = -1.0f;
-	matrix[14] = (2.0f*zNear*zFar) / (zNear - zFar);
-	return matrix;
 }
 
 INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
@@ -90,6 +75,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	if (!program.Link())
 	{
 		printf("link program failed!\n");
+		//return -1;
 	}
 	GLuint mainTexture = CreateTexture("./Res/image/test.bmp");
 	GLuint secondaryTexture = CreateTexture("./Res/image/wood.bmp");
@@ -107,6 +93,25 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glEnable(GL_DEPTH_TEST);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	//FBO
+	FrameBufferObject fbo;
+	fbo.AttachColorBuffer(NORMALCOLOR, GL_COLOR_ATTACHMENT0, GL_RGBA, 256, 256);
+	fbo.AttachDepthBuffer(DEPTH, 256, 256);
+	fbo.Finish();
+
+	//full screen
+	FullScreenQuad fsq;
+	fsq.Init();
+	GPUProgram fsqProgram;
+	fsqProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
+	fsqProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_fs));
+	if (!fsqProgram.Link())
+	{
+		printf("link fsqProgram failed!\n");
+		//return -1;
+	}
+
+
 	MSG msg;
 	while (true)
 	{
@@ -119,8 +124,11 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//off screen fbo
+		fbo.Bind();
 
+		glClearColor(41.0f / 255.0f, 71.0f / 255.0f, 121.0f / 255.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		program.Bind();
 		program.SetUniformfv("M", glm::value_ptr(modelMat), 16);
 		program.SetUniformfv("V", glm::value_ptr(viewMat), 16);
@@ -133,6 +141,15 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		obj.Draw();
 
 		program.UnBind();
+		fbo.UnBind();
+
+		//full screen quads
+		glClearColor(41.0f / 255.0f, 71.0f / 255.0f, 121.0f / 255.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fsqProgram.Bind();
+		fsq.DrawWithTexture(fsqProgram.GetLocation("pos", GPUProgram::ATTRIBUTE), fsqProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
+		fsqProgram.UnBind();
+
 		SwapBuffers(dc);
 	}
 	return 0;
