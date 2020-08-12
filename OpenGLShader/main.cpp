@@ -81,7 +81,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	GLuint secondaryTexture = CreateTexture("./Res/image/wood.bmp");
 	
 	glm::mat4 viewMat = glm::mat4();
-	glm::mat4 modelMat = glm::translate<float>(0.0f, 0.0f, -4.0f)*glm::rotate<float>(45.0f, 0.0f, 1.0f, 0.0f);
+	glm::mat4 modelMat = glm::translate<float>(0.0f, 0.0f, -2.0f)*glm::rotate<float>(45.0f, 0.0f, 1.0f, 0.0f);
 	glm::mat4 projectMat = glm::perspective<float>(45.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	glClearColor(41.0f/255.0f,  71.0f/255.0f, 121.0f / 255.0f, 1.0f);
@@ -95,8 +95,8 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	//FBO
 	FrameBufferObject fbo;
-	fbo.AttachColorBuffer(NORMALCOLOR, GL_COLOR_ATTACHMENT0, GL_RGBA, 256, 256);
-	fbo.AttachDepthBuffer(DEPTH, 256, 256);
+	fbo.AttachColorBuffer(NORMALCOLOR, GL_COLOR_ATTACHMENT0, GL_RGBA, 800, 600);
+	fbo.AttachDepthBuffer(DEPTH, 800, 600);
 	fbo.Finish();
 
 	//full screen
@@ -127,7 +127,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//off screen fbo
 		fbo.Bind();
 
-		glClearColor(41.0f / 255.0f, 71.0f / 255.0f, 121.0f / 255.0f, 1.0f);
+		glClearColor(71.0f / 255.0f, 41.0f / 255.0f, 121.0f / 255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		program.Bind();
 		program.SetUniformfv("M", glm::value_ptr(modelMat), 16);

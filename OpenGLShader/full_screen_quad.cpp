@@ -14,6 +14,7 @@ void FullScreenQuad::Init()
 
 void FullScreenQuad::DrawWithTexture(const GLint& posLocation, const GLint& pTextureLocation, const GLuint& texture)
 {
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(pTextureLocation, 0);
 
