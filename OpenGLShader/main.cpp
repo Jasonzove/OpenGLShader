@@ -63,25 +63,23 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glewInit();
 
 	ObjMoel obj;
-	if (!obj.Load("./Res/model/Cube.obj"))
+	if (!obj.Load("./Res/model/Sphere.obj"))
 	{
 		printf("load obj model failed!\n");
 		return -1;
 	}
 
 	GPUProgram program;
-	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_sample_vs));
-	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_sample_fs));
+	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_ambient_vs));
+	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_ambient_fs));
 	if (!program.Link())
 	{
 		printf("link program failed!\n");
 		//return -1;
 	}
-	GLuint mainTexture = CreateTexture("./Res/image/test.bmp");
-	GLuint secondaryTexture = CreateTexture("./Res/image/wood.bmp");
 	
 	glm::mat4 viewMat = glm::mat4();
-	glm::mat4 modelMat = glm::translate<float>(0.0f, 0.0f, -2.0f)*glm::rotate<float>(45.0f, 0.0f, 1.0f, 0.0f);
+	glm::mat4 modelMat = glm::translate<float>(0.0f, 0.0f, -4.0f);
 	glm::mat4 projectMat = glm::perspective<float>(45.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	glClearColor(41.0f/255.0f,  71.0f/255.0f, 121.0f / 255.0f, 1.0f);
@@ -93,24 +91,9 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glEnable(GL_DEPTH_TEST);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	//FBO
-	FrameBufferObject fbo;
-	fbo.AttachColorBuffer(NORMALCOLOR, GL_COLOR_ATTACHMENT0, GL_RGBA, 800, 600);
-	fbo.AttachDepthBuffer(DEPTH, 800, 600);
-	fbo.Finish();
-
-	//full screen
-	FullScreenQuad fsq;
-	fsq.Init();
-	GPUProgram fsqProgram;
-	fsqProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
-	fsqProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_fs));
-	if (!fsqProgram.Link())
-	{
-		printf("link fsqProgram failed!\n");
-		//return -1;
-	}
-
+	//π‚’’
+	float ambientLight[] = { 0.4f,0.4f,0.4f,1.0f };
+	float ambientMaterial[] = { 0.4f,0.4f,0.4f,1.0f };
 
 	MSG msg;
 	while (true)
@@ -124,31 +107,19 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		//off screen fbo
-		fbo.Bind();
 
-		glClearColor(71.0f / 255.0f, 41.0f / 255.0f, 121.0f / 255.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		program.Bind();
 		program.SetUniformfv("M", glm::value_ptr(modelMat), 16);
 		program.SetUniformfv("V", glm::value_ptr(viewMat), 16);
 		program.SetUniformfv("P", glm::value_ptr(projectMat), 16);
-		program.SetTexture("U_MainTexture", mainTexture, GPUProgram::TEXTURE0, 1);
-		program.SetTexture("U_SecondaryTexture", secondaryTexture, GPUProgram::TEXTURE1, 1);
+		program.SetUniformfv("U_AmbientLigth", ambientLight, 4);
+		program.SetUniformfv("U_AmbientMaterial", ambientMaterial, 4);
 
-		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE),
-			program.GetLocation("texcoord", GPUProgram::ATTRIBUTE));
+		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE));
 		obj.Draw();
-
 		program.UnBind();
-		fbo.UnBind();
-
-		//full screen quads
-		glClearColor(41.0f / 255.0f, 71.0f / 255.0f, 121.0f / 255.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		fsqProgram.Bind();
-		fsq.DrawWithTexture(fsqProgram.GetLocation("pos", GPUProgram::ATTRIBUTE), fsqProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
-		fsqProgram.UnBind();
 
 		SwapBuffers(dc);
 	}

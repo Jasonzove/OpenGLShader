@@ -77,6 +77,12 @@
     <None Include="Res\shader\full_screen_quad.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
+    <None Include="Res\shader\ambient.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\ambient.vs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
