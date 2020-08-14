@@ -148,6 +148,8 @@
   <ItemGroup>
     <None Include="Res\shader\ambient.fs" />
     <None Include="Res\shader\ambient.vs" />
+    <None Include="Res\shader\diffuse_pixel.fs" />
+    <None Include="Res\shader\diffuse_pixel.vs" />
     <None Include="Res\shader\diffuse_vertex.fs" />
     <None Include="Res\shader\diffuse_vertex.vs" />
     <None Include="Res\shader\full_screen_quad.fs" />

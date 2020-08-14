@@ -1,4 +1,5 @@
 #version 460 core
+//Öğ¶¥µãäÖÈ¾
 
 in vec3 pos;
 in vec2 texcoord;
