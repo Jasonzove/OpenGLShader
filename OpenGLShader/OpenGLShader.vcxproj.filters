@@ -83,6 +83,12 @@
     <None Include="Res\shader\ambient.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
+    <None Include="Res\shader\diffuse.vs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\diffuse.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

@@ -93,6 +93,9 @@ void GPUProgram::SetUniformfv(const char* const& pLocation, const float* const p
 	case 2:
 		glUniform2fv(location, 1, pData);
 		break;
+	case 3:
+		glUniform3fv(location, 1, pData);
+		break;
 	case 4:
 		glUniform4fv(location, 1, pData);
 		break;
