@@ -83,10 +83,10 @@
     <None Include="Res\shader\ambient.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
-    <None Include="Res\shader\diffuse.vs">
+    <None Include="Res\shader\diffuse_vertex.fs">
       <Filter>Resource Files\shader</Filter>
     </None>
-    <None Include="Res\shader\diffuse.fs">
+    <None Include="Res\shader\diffuse_vertex.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
   </ItemGroup>
