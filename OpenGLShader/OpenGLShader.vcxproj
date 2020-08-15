@@ -156,6 +156,8 @@
     <None Include="Res\shader\full_screen_quad.vs" />
     <None Include="Res\shader\sample.fs" />
     <None Include="Res\shader\sample.vs" />
+    <None Include="Res\shader\specular_vertex.fs" />
+    <None Include="Res\shader\specular_vertex.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\full_screen_quad.h" />

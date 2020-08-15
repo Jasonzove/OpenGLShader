@@ -70,8 +70,8 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 
 	GPUProgram program;
-	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_diffuse_pixel_vs));
-	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_diffuse_pixel_fs));
+	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_specular_vertex_vs));
+	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_specular_vertex_fs));
 	if (!program.Link())
 	{
 		printf("link program failed!\n");
@@ -98,6 +98,9 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	float ambientMaterial[] = { 0.4f,0.4f,0.4f,1.0f };
 	float diffuseLight[] = { 1.0f,1.0f,1.0f,1.0f };
 	float diffuseMaterial[] = { 0.4f,0.4f,0.4f,1.0f };
+	float eyePos[] = { 0.0f, 0.0f, 0.0f };
+	float specularLight[] = { 1.0f,1.0f,1.0f,1.0f };
+	float specularMaterial[] = { 1.0f,1.0f,1.0f,1.0f };
 
 	MSG msg;
 	while (true)
@@ -124,6 +127,9 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		program.SetUniformfv("U_AmbientMaterial", ambientMaterial, 4);
 		program.SetUniformfv("U_DiffuseLight", diffuseLight, 4);
 		program.SetUniformfv("U_DiffuseMaterial", diffuseMaterial, 4);
+		program.SetUniformfv("U_EyePos", eyePos, 3);
+		program.SetUniformfv("U_SpecularLight", specularLight, 4);
+		program.SetUniformfv("U_SpecularMaterial", specularMaterial, 4);
 
 		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE),
 			program.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
