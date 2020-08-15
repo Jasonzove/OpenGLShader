@@ -113,6 +113,12 @@
     <None Include="Res\shader\cartoon_vertex.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
+    <None Include="Res\shader\cartoon_pixel.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\cartoon_pixel.vs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
