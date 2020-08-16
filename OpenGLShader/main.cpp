@@ -93,7 +93,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//π‚’’
-	float lightPos[] = { 1.0f, 1.0f, 0.0f, 0.0 };
+	float lightPos[] = { 1.0f, 1.0f, 0.0f, 1.0 };
 	float ambientLight[] = { 0.4f,0.4f,0.4f,1.0f };
 	float ambientMaterial[] = { 0.4f,0.4f,0.4f,1.0f };
 	float diffuseLight[] = { 1.0f,1.0f,1.0f,1.0f };
