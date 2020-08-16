@@ -70,8 +70,8 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 
 	GPUProgram program;
-	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_cartoon_pixel_vs));
-	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_cartoon_pixel_fs));
+	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_light_vs));
+	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_light_fs));
 	if (!program.Link())
 	{
 		printf("link program failed!\n");
@@ -93,7 +93,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//π‚’’
-	float lightPos[] = { 1.0f, 1.0f, 0.0f };
+	float lightPos[] = { 1.0f, 1.0f, 0.0f, 0.0 };
 	float ambientLight[] = { 0.4f,0.4f,0.4f,1.0f };
 	float ambientMaterial[] = { 0.4f,0.4f,0.4f,1.0f };
 	float diffuseLight[] = { 1.0f,1.0f,1.0f,1.0f };
@@ -122,7 +122,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		program.SetUniformfv("V", glm::value_ptr(viewMat), 16);
 		program.SetUniformfv("P", glm::value_ptr(projectMat), 16);
 		program.SetUniformfv("NM", glm::value_ptr(normalMat), 16);
-		program.SetUniformfv("U_LightPos", lightPos, 3);
+		program.SetUniformfv("U_LightPos", lightPos, 4);
 		program.SetUniformfv("U_AmbientLigth", ambientLight, 4);
 		program.SetUniformfv("U_AmbientMaterial", ambientMaterial, 4);
 		program.SetUniformfv("U_DiffuseLight", diffuseLight, 4);
