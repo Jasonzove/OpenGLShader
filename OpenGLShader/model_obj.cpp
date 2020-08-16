@@ -153,40 +153,26 @@ bool ObjMoel::Load(const char* const& pFilePath)
 	return true;
 }
 
-void ObjMoel::Bind(const GLuint& posLocation)
+void ObjMoel::Bind(const GLuint& posLocation, const BindType& bindType, const GLuint& normalLocation, const GLuint& texcoordLocation)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	//pos
 	glEnableVertexAttribArray(posLocation);
 	glVertexAttribPointer(posLocation, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
+	if ((bindType & BINDTEXCOORD) != 0)
+	{
+		//texcoord
+		glEnableVertexAttribArray(texcoordLocation);
+		glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(3 * sizeof(float)));
+	}
 
-void ObjMoel::Bind(const GLuint& posLocation, const GLuint& texcoordLocation)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	//pos
-	glEnableVertexAttribArray(posLocation);
-	glVertexAttribPointer(posLocation, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)0);
-	//texcoord
-	glEnableVertexAttribArray(texcoordLocation);
-	glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(3 * sizeof(float)));
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void ObjMoel::Bind(const GLuint& posLocation, const GLuint& texcoordLocation, const GLuint& normalLocation)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	//pos
-	glEnableVertexAttribArray(posLocation);
-	glVertexAttribPointer(posLocation, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)0);
-	//texcoord
-	glEnableVertexAttribArray(texcoordLocation);
-	glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(3 * sizeof(float)));
-	//normal
-	glEnableVertexAttribArray(normalLocation);
-	glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(5 * sizeof(float)));
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	if ((bindType & BINDNORMAL) != 0)
+	{
+		//normal
+		glEnableVertexAttribArray(normalLocation);
+		glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(5 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 }
 
 void ObjMoel::Draw()

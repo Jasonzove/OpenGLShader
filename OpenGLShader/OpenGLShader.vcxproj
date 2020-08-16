@@ -160,6 +160,8 @@
     <None Include="Res\shader\full_screen_quad.vs" />
     <None Include="Res\shader\light.fs" />
     <None Include="Res\shader\light.vs" />
+    <None Include="Res\shader\light_spot.fs" />
+    <None Include="Res\shader\light_spot.vs" />
     <None Include="Res\shader\sample.fs" />
     <None Include="Res\shader\sample.vs" />
     <None Include="Res\shader\specular_pixel.fs" />

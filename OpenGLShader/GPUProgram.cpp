@@ -106,6 +106,21 @@ void GPUProgram::SetUniformfv(const char* const& pLocation, const float* const p
 	}
 }
 
+void GPUProgram::SetUniformf(const char* const& pLocation, const float data, const int& size)
+{
+	GLint location;
+	location = GetLocation(pLocation, LocationType::UNIFORM);
+
+	switch (size)
+	{
+	case 1:
+		glUniform1f(location, data);
+		break;
+	default:
+		break;
+	}
+}
+
 void GPUProgram::SetTexture(const char* const& pSampler, const int& textureId, const TextureUint& textureUint, const int& size)
 {
 	GLint location = GetLocation(pSampler, LocationType::UNIFORM);

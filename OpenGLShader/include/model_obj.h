@@ -24,12 +24,18 @@ struct VertexData
 class ObjMoel
 {
 public:
+	enum BindType
+	{
+		NONE = 0X00,
+		BINDTEXCOORD = 0X01,
+		BINDNORMAL = 0X02,
+	};
+
+public:
 	ObjMoel();
 	~ObjMoel();
 	bool Load(const char* const& pFilePath);
-	void Bind(const GLuint& posLocation);
-	void Bind(const GLuint& posLocation, const GLuint& texcoordLocation);
-	void Bind(const GLuint& posLocation, const GLuint& texcoordLocation, const GLuint& normalLocation);
+	void Bind(const GLuint& posLocation, const BindType& bindType, const GLuint& texcoordLocation = 0, const GLuint& normalLocation = 0);
 	void Draw();
 private:
 	GLuint mVBO;

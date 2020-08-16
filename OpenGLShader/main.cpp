@@ -63,15 +63,15 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glewInit();
 
 	ObjMoel obj;
-	if (!obj.Load("./Res/model/Sphere.obj"))
+	if (!obj.Load("./Res/model/Quad.obj"))
 	{
 		printf("load obj model failed!\n");
 		return -1;
 	}
 
 	GPUProgram program;
-	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_light_vs));
-	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_light_fs));
+	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_spot_light_vs));
+	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_spot_light_fs));
 	if (!program.Link())
 	{
 		printf("link program failed!\n");
@@ -79,7 +79,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 	
 	glm::mat4 viewMat = glm::mat4();
-	glm::mat4 modelMat = glm::translate<float>(0.0f, 0.0f, -4.0f);
+	glm::mat4 modelMat = glm::translate<float>(0.0f, -0.5f, -4.0f)*glm::rotate(90.0f, -1.0f,0.0f,0.0f)*glm::scale(2.0f,2.0f,2.0f);
 	glm::mat4 normalMat = glm::inverseTranspose(modelMat);
 	glm::mat4 projectMat = glm::perspective<float>(45.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
 
@@ -93,7 +93,9 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//光照
-	float lightPos[] = { 1.0f, 1.0f, 0.0f, 1.0 };
+	float lightPos[] = { 0.0f, 1.5f, -4.0f, 1.0 };
+	float spotDir[] = { 0.0, -1.0, 0.0, 1.0 }; //聚光灯方向
+	float cutOff = 15.0f; //聚光灯半角
 	float ambientLight[] = { 0.4f,0.4f,0.4f,1.0f };
 	float ambientMaterial[] = { 0.4f,0.4f,0.4f,1.0f };
 	float diffuseLight[] = { 1.0f,1.0f,1.0f,1.0f };
@@ -121,19 +123,19 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		program.SetUniformfv("M", glm::value_ptr(modelMat), 16);
 		program.SetUniformfv("V", glm::value_ptr(viewMat), 16);
 		program.SetUniformfv("P", glm::value_ptr(projectMat), 16);
-		program.SetUniformfv("NM", glm::value_ptr(normalMat), 16);
+		//program.SetUniformfv("NM", glm::value_ptr(normalMat), 16);
 		program.SetUniformfv("U_LightPos", lightPos, 4);
 		program.SetUniformfv("U_AmbientLigth", ambientLight, 4);
 		program.SetUniformfv("U_AmbientMaterial", ambientMaterial, 4);
 		program.SetUniformfv("U_DiffuseLight", diffuseLight, 4);
 		program.SetUniformfv("U_DiffuseMaterial", diffuseMaterial, 4);
-		program.SetUniformfv("U_EyePos", eyePos, 3);
-		program.SetUniformfv("U_SpecularLight", specularLight, 4);
-		program.SetUniformfv("U_SpecularMaterial", specularMaterial, 4);
+		//program.SetUniformfv("U_EyePos", eyePos, 3);
+		//program.SetUniformfv("U_SpecularLight", specularLight, 4);
+		//program.SetUniformfv("U_SpecularMaterial", specularMaterial, 4);
+		program.SetUniformfv("U_SpotDirection", spotDir, 4);
+		program.SetUniformf("U_CutOff", cutOff, 1);
 
-		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE),
-			program.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
-			program.GetLocation("normal", GPUProgram::ATTRIBUTE));
+		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE), obj.NONE);
 		obj.Draw();
 		program.UnBind();
 

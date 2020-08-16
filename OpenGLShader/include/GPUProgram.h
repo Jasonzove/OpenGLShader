@@ -50,6 +50,7 @@ public:
 	bool Link();
 	void AttachShader(const ShaderType& shaderType, const char* const& shaderCode);
 	void SetUniformfv(const char* const& pLocation, const float* const pData, const int& size);
+	void SetUniformf(const char* const& pLocation, const float data, const int& size);
 	void SetTexture(const char* const& pSampler, const int& textureId, const TextureUint& textureUint, const int& size);
 	void SetAttribPointer(const char* const& pLocation, const int& size, const int& stride, const void* const& pointer);
 	GLint GetLocation(const char* const& pLocation, const LocationType& type);
