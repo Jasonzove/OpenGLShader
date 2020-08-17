@@ -45,7 +45,7 @@ void main()
 	float spotFactor = 0.0;
 	if(cosCurrentThta > cosCutoff)
 	{
-		spotFactor = 0.8;
+		spotFactor = pow(cosCurrentThta, U_SpotDirection.w);
 	}
 
 	vec4 diffuseColor = U_DiffuseLight*U_DiffuseMaterial*spotFactor;

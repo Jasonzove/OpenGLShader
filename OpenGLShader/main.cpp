@@ -94,10 +94,10 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	//光照
 	float lightPos[] = { 0.0f, 1.5f, -4.0f, 1.0 };
-	float spotDir[] = { 0.0, -1.0, 0.0, 1.0 }; //聚光灯方向
+	float spotDir[] = { 0.0, -1.0, 0.0, 64.0 }; //聚光灯方向，第四个用于软化边缘
 	float cutOff = 15.0f; //聚光灯半角
 	float ambientLight[] = { 0.4f,0.4f,0.4f,1.0f };
-	float ambientMaterial[] = { 0.4f,0.4f,0.4f,1.0f };
+	float ambientMaterial[] = { 0.1f,0.1f,0.1f,1.0f };
 	float diffuseLight[] = { 1.0f,1.0f,1.0f,1.0f };
 	float diffuseMaterial[] = { 0.4f,0.4f,0.4f,1.0f };
 	float eyePos[] = { 0.0f, 0.0f, 0.0f };
