@@ -70,8 +70,8 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 
 	GPUProgram program;
-	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_spot_light_vs));
-	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_spot_light_fs));
+	program.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_light_vs));
+	program.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_light_fs));
 	if (!program.Link())
 	{
 		printf("link program failed!\n");
@@ -123,19 +123,21 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		program.SetUniformfv("M", glm::value_ptr(modelMat), 16);
 		program.SetUniformfv("V", glm::value_ptr(viewMat), 16);
 		program.SetUniformfv("P", glm::value_ptr(projectMat), 16);
-		//program.SetUniformfv("NM", glm::value_ptr(normalMat), 16);
+		program.SetUniformfv("NM", glm::value_ptr(normalMat), 16);
 		program.SetUniformfv("U_LightPos", lightPos, 4);
 		program.SetUniformfv("U_AmbientLigth", ambientLight, 4);
 		program.SetUniformfv("U_AmbientMaterial", ambientMaterial, 4);
 		program.SetUniformfv("U_DiffuseLight", diffuseLight, 4);
 		program.SetUniformfv("U_DiffuseMaterial", diffuseMaterial, 4);
-		//program.SetUniformfv("U_EyePos", eyePos, 3);
-		//program.SetUniformfv("U_SpecularLight", specularLight, 4);
-		//program.SetUniformfv("U_SpecularMaterial", specularMaterial, 4);
+		program.SetUniformfv("U_EyePos", eyePos, 3);
+		program.SetUniformfv("U_SpecularLight", specularLight, 4);
+		program.SetUniformfv("U_SpecularMaterial", specularMaterial, 4);
 		program.SetUniformfv("U_SpotDirection", spotDir, 4);
 		program.SetUniformf("U_CutOff", cutOff, 1);
 
-		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE), obj.NONE);
+		obj.Bind(program.GetLocation("pos", GPUProgram::ATTRIBUTE),BINDNORMAL, 
+			program.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			program.GetLocation("normal", GPUProgram::ATTRIBUTE));
 		obj.Draw();
 		program.UnBind();
 

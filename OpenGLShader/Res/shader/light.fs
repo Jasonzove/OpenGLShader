@@ -11,6 +11,10 @@ uniform vec3 U_EyePos;
 uniform vec4 U_SpecularLight;
 uniform vec4 U_SpecularMaterial;
 
+//聚光灯
+uniform vec4 U_SpotDirection;
+uniform float U_CutOff;
+
 in vec3 T_Normal;
 in vec3 T_WorldPos;
 
@@ -34,15 +38,35 @@ void main()
 	}
 	else
 	{
-		//点光源
+		//点光源|聚光灯(反向)
 		L = U_LightPos.xyz - T_WorldPos;
-		distance = length(L);
-		attenuation = 1.0/(constantFactor + linearFactor*distance + expFactor*distance*distance);
 	}
-
 	L = normalize(L);
 	vec3 N = normalize(T_Normal);
-	float diffuseIntensity = max(0.0, dot(L, N));
+
+	float diffuseIntensity = 0.0;
+	if(U_LightPos.w != 0)
+	{
+		if(U_CutOff > 0.0)
+		{
+			float radianCutOff = radians(U_CutOff);
+			float cosCutoff = cos(radianCutOff);
+			vec3 spotDir = normalize(U_SpotDirection.xyz);
+			float cosCurrentThta = max(0.0,dot(spotDir, -L));
+			if(cosCurrentThta > cosCutoff && dot(L, N) > 0.0)
+			{
+				diffuseIntensity = pow(cosCurrentThta, U_SpotDirection.w);
+			}
+		}
+		else
+		{
+			//点光源
+			distance = length(L);
+			attenuation = 1.0/(constantFactor + linearFactor*distance + expFactor*distance*distance);
+			diffuseIntensity = max(0.0, dot(L, N));
+		}
+	}
+
 	vec4 diffuseColor = U_DiffuseLight*U_DiffuseMaterial*(diffuseIntensity*attenuation);
 
 	//specular

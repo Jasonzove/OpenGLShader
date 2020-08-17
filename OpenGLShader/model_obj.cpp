@@ -153,7 +153,7 @@ bool ObjMoel::Load(const char* const& pFilePath)
 	return true;
 }
 
-void ObjMoel::Bind(const GLuint& posLocation, const BindType& bindType, const GLuint& normalLocation, const GLuint& texcoordLocation)
+void ObjMoel::Bind(const GLuint& posLocation, const BindType& bindType, const GLuint& texcoordLocation, const GLuint& normalLocation)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	//pos

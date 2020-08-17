@@ -21,16 +21,15 @@ struct VertexData
 	float normal[3];
 };
 
+typedef enum BindType
+{
+	NONE = 0X00,
+	BINDTEXCOORD = 0X01,
+	BINDNORMAL = 0X02,
+}BindType;
+
 class ObjMoel
 {
-public:
-	enum BindType
-	{
-		NONE = 0X00,
-		BINDTEXCOORD = 0X01,
-		BINDNORMAL = 0X02,
-	};
-
 public:
 	ObjMoel();
 	~ObjMoel();
