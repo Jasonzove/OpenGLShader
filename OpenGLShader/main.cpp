@@ -41,7 +41,12 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	wndClass.style = CS_VREDRAW | CS_HREDRAW;
 	ATOM atom = RegisterClassEx(&wndClass);
 
-	HWND hwnd = CreateWindowEx(NULL, "OpenGL", "RenderWindow", WS_OVERLAPPEDWINDOW, 100, 100, 800, 600, NULL, NULL, hInstance, NULL);
+	RECT rect;
+	rect.left = 0; rect.right = 800;
+	rect.top = 0; rect.bottom = 600;
+	::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
+	HWND hwnd = CreateWindowEx(NULL, "OpenGL", "RenderWindow", WS_OVERLAPPEDWINDOW, 100, 100, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
 	HDC dc = GetDC(hwnd);
 	PIXELFORMATDESCRIPTOR pfd;
 	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -59,6 +64,9 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	HGLRC rc = wglCreateContext(dc);
 	wglMakeCurrent(dc, rc);
+	::GetClientRect(hwnd, &rect);
+	int width = rect.right - rect.left;
+	int height = rect.bottom - rect.top;
 
 	glewInit();
 
@@ -81,7 +89,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	glm::mat4 viewMat = glm::mat4();
 	glm::mat4 modelMat = glm::translate<float>(0.0f, -0.5f, -4.0f)*glm::rotate(90.0f, -1.0f,0.0f,0.0f)*glm::scale(2.0f,2.0f,2.0f);
 	glm::mat4 normalMat = glm::inverseTranspose(modelMat);
-	glm::mat4 projectMat = glm::perspective<float>(45.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
+	glm::mat4 projectMat = glm::perspective<float>(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 
 	glClearColor(41.0f/255.0f,  71.0f/255.0f, 121.0f / 255.0f, 1.0f);
 
