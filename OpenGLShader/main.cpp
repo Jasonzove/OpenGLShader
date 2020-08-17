@@ -85,7 +85,25 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		printf("link program failed!\n");
 		//return -1;
 	}
-	
+	//full screen
+	GPUProgram fsProgram;
+	fsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
+	fsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_fs));
+	if (!fsProgram.Link())
+	{
+		printf("link program failed!\n");
+		//return -1;
+	}
+	FullScreenQuad fsQuad;
+	fsQuad.Init();
+
+	//fbo
+	FrameBufferObject fbo;
+	fbo.AttachColorBuffer(NORMALCOLOR, GL_COLOR_ATTACHMENT0, GL_RGBA, width, height);
+	fbo.AttachDepthBuffer(DEPTH, width, height);
+	fbo.Finish();
+
+
 	glm::mat4 viewMat = glm::mat4();
 	glm::mat4 modelMat = glm::translate<float>(0.0f, -0.5f, -4.0f)*glm::rotate(90.0f, -1.0f,0.0f,0.0f)*glm::scale(2.0f,2.0f,2.0f);
 	glm::mat4 normalMat = glm::inverseTranspose(modelMat);
@@ -125,6 +143,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			DispatchMessage(&msg);
 		}
 
+		fbo.Bind();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		program.Bind();
@@ -148,6 +167,29 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			program.GetLocation("normal", GPUProgram::ATTRIBUTE));
 		obj.Draw();
 		program.UnBind();
+		fbo.UnBind();
+
+		//full screen
+		fsProgram.Bind();
+		glClearColor(0.4f, 0.7f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fsQuad.DrawWithTexture(LTFULLSCREEN, fsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			fsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			fsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM),
+			fbo.GetBufferByType(NORMALCOLOR));
+		fsQuad.DrawWithTexture(LBFULLSCREEN, fsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			fsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			fsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM),
+			fbo.GetBufferByType(NORMALCOLOR));
+		fsQuad.DrawWithTexture(RTFULLSCREEN, fsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			fsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			fsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM),
+			fbo.GetBufferByType(NORMALCOLOR));
+		fsQuad.DrawWithTexture(RBFULLSCREEN, fsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			fsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			fsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM),
+			fbo.GetBufferByType(NORMALCOLOR));
+		fsProgram.UnBind();
 
 		SwapBuffers(dc);
 	}

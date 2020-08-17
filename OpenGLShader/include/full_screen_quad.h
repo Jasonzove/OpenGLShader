@@ -14,15 +14,30 @@
 
 #include "glew.h"
 
+enum FullScreenType
+{
+	FULLSCREEN = 0,
+	LTFULLSCREEN, //×óÉÏ
+	LBFULLSCREEN, 
+	RTFULLSCREEN,
+	RBFULLSCREEN,
+};
+
 class FullScreenQuad
 {
 public:
 	void Init();
 	void Draw(const GLint& posLocation);
-	void DrawWithTexture(const GLint& posLocation, const GLint& pTextureLocation, const GLuint& texture);
+	void DrawWithTexture(
+		const FullScreenType& type, 
+		const GLint& posLocation, 
+		const GLint& texcoordLocation, 
+		const GLint& pTextureLocation, 
+		const GLuint& texture);
 
 private:
 	GLuint mVBO;
+	GLuint mLTVBO, mLBVBO, mRTVBO, mRBVBO;
 };
 
 #endif
