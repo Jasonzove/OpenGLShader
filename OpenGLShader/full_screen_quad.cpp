@@ -94,7 +94,7 @@ void FullScreenQuad::Draw(const GLint& posLocation)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	glEnableVertexAttribArray(posLocation);
-	glVertexAttribPointer(posLocation, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(posLocation, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glDrawArrays(GL_QUADS, 0, 4);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

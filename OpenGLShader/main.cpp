@@ -86,6 +86,41 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//return -1;
 	}
 
+	GPUProgram originalFsProgram;
+	originalFsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
+	originalFsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_fs));
+	if (!originalFsProgram.Link())
+	{
+		printf("link program failed!\n");
+		//return -1;
+	}
+
+	GPUProgram dilationFsProgram;
+	dilationFsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
+	dilationFsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_dilation_fs));
+	if (!dilationFsProgram.Link())
+	{
+		printf("link program failed!\n");
+		//return -1;
+	}
+
+	GPUProgram erosionFsProgram;
+	erosionFsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
+	erosionFsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_erosion_fs));
+	if (!erosionFsProgram.Link())
+	{
+		printf("link program failed!\n");
+		//return -1;
+	}
+
+	FrameBufferObject fbo;
+	fbo.AttachColorBuffer(NORMALCOLOR, GL_COLOR_ATTACHMENT0, GL_RGBA, width, height);
+	fbo.AttachDepthBuffer(DEPTH, width, height);
+	fbo.Finish();
+
+	FullScreenQuad fs;
+	fs.Init();
+
 	glm::mat4 viewMat = glm::lookAt(glm::vec3(-0.5f, 2.5f, -3.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 modelMat = glm::translate<float>(0.0f, 0.0f, -6.0f) * glm::rotate(-30.0f, 1.0f, 1.0f, 1.0f);
 	glm::mat4 normalMat = glm::inverseTranspose(modelMat);
@@ -116,7 +151,8 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			DispatchMessage(&msg);
 		}
 
-		glClearColor(0.1f, 0.4f, 0.7f, 1.0f);
+		fbo.Bind();
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -133,6 +169,25 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		obj.Draw();
 		program.UnBind();
 		glDisable(GL_BLEND);
+		fbo.UnBind();
+
+		originalFsProgram.Bind();
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fs.DrawWithTexture(LTFULLSCREEN, originalFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			originalFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			originalFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
+
+		dilationFsProgram.Bind();
+		fs.DrawWithTexture(RTFULLSCREEN, dilationFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			dilationFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			dilationFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
+
+		erosionFsProgram.Bind();
+		fs.DrawWithTexture(LBFULLSCREEN, erosionFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			erosionFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			erosionFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
+		erosionFsProgram.UnBind();
 
 		SwapBuffers(dc);
 	}

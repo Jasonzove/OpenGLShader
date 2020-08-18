@@ -14,7 +14,7 @@ void main()
 	float alpha = 0.0;
 	if(cosThta > 0.0)
 	{
-		alpha = pow(1-cosThta, 4);
+		alpha = pow(1-cosThta, 3);
 	}
 
 	gl_FragColor = vec4(1.0,1.0,1.0,alpha);

@@ -156,6 +156,8 @@
     <None Include="Res\shader\diffuse_pixel.vs" />
     <None Include="Res\shader\diffuse_vertex.fs" />
     <None Include="Res\shader\diffuse_vertex.vs" />
+    <None Include="Res\shader\dilation.fs" />
+    <None Include="Res\shader\erosion.fs" />
     <None Include="Res\shader\full_screen_quad.fs" />
     <None Include="Res\shader\full_screen_quad.vs" />
     <None Include="Res\shader\light.fs" />

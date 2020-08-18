@@ -26,12 +26,14 @@
 #define IDR_SHADER_spot_light_fs        122
 #define IDR_SHADER_x_ray_vs             123
 #define IDR_SHADER_x_ray_fs             124
+#define IDR_SHADER_dilation_fs          125
+#define IDR_SHADER_erosion_fs           126
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        125
+#define _APS_NEXT_RESOURCE_VALUE        127
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101

@@ -137,6 +137,12 @@
     <None Include="Res\shader\x_ray.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
+    <None Include="Res\shader\dilation.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\erosion.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
