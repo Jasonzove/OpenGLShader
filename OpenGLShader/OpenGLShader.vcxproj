@@ -168,6 +168,8 @@
     <None Include="Res\shader\specular_pixel.vs" />
     <None Include="Res\shader\specular_vertex.fs" />
     <None Include="Res\shader\specular_vertex.vs" />
+    <None Include="Res\shader\x_ray.fs" />
+    <None Include="Res\shader\x_ray.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\full_screen_quad.h" />

@@ -131,6 +131,12 @@
     <None Include="Res\shader\light_spot.vs">
       <Filter>Resource Files\shader</Filter>
     </None>
+    <None Include="Res\shader\x_ray.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\x_ray.vs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
