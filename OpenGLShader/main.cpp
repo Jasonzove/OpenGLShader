@@ -113,6 +113,15 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//return -1;
 	}
 
+	GPUProgram gaussionFsProgram;
+	gaussionFsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
+	gaussionFsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_gaussion_fs));
+	if (!gaussionFsProgram.Link())
+	{
+		printf("link program failed!\n");
+		//return -1;
+	}
+
 	FrameBufferObject fbo;
 	fbo.AttachColorBuffer(NORMALCOLOR, GL_COLOR_ATTACHMENT0, GL_RGBA, width, height);
 	fbo.AttachDepthBuffer(DEPTH, width, height);
@@ -182,6 +191,11 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		fs.DrawWithTexture(RTFULLSCREEN, dilationFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
 			dilationFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
 			dilationFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
+
+		gaussionFsProgram.Bind();
+		fs.DrawWithTexture(RBFULLSCREEN, gaussionFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			gaussionFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			gaussionFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
 
 		erosionFsProgram.Bind();
 		fs.DrawWithTexture(LBFULLSCREEN, erosionFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),

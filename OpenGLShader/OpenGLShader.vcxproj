@@ -160,6 +160,7 @@
     <None Include="Res\shader\erosion.fs" />
     <None Include="Res\shader\full_screen_quad.fs" />
     <None Include="Res\shader\full_screen_quad.vs" />
+    <None Include="Res\shader\gaussion.fs" />
     <None Include="Res\shader\light.fs" />
     <None Include="Res\shader\light.vs" />
     <None Include="Res\shader\light_spot.fs" />
