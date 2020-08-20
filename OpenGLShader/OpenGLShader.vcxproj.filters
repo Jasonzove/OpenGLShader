@@ -146,6 +146,15 @@
     <None Include="Res\shader\gaussion.fs">
       <Filter>Resource Files\shader</Filter>
     </None>
+    <None Include="shader_f.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Res\shader\gaussion_vertical.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
+    <None Include="Res\shader\gaussion_horizontal.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

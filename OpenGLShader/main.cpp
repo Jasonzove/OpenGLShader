@@ -95,19 +95,19 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//return -1;
 	}
 
-	GPUProgram dilationFsProgram;
-	dilationFsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
-	dilationFsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_fs));
-	if (!dilationFsProgram.Link())
+	GPUProgram horizontalFsProgram;
+	horizontalFsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
+	horizontalFsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_gaussion_horizontal_fs));
+	if (!horizontalFsProgram.Link())
 	{
 		printf("link program failed!\n");
 		//return -1;
 	}
 
-	GPUProgram erosionFsProgram;
-	erosionFsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
-	erosionFsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_fs));
-	if (!erosionFsProgram.Link())
+	GPUProgram verticalFsProgram;
+	verticalFsProgram.AttachShader(GPUProgram::VERTEX_SHADER, Shader::GetShaderCode(IDR_SHADER_full_screen_quad_vs));
+	verticalFsProgram.AttachShader(GPUProgram::FRAGEMENT_SHADER, Shader::GetShaderCode(IDR_SHADER_gaussion_vertical_fs));
+	if (!verticalFsProgram.Link())
 	{
 		printf("link program failed!\n");
 		//return -1;
@@ -192,26 +192,6 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		glDisable(GL_BLEND);
 		fbo.UnBind();
 
-		fboBlur1.Bind();
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		gaussionFsProgram.Bind();
-		fs.DrawWithTexture(FULLSCREEN, gaussionFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
-			gaussionFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
-			gaussionFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
-		gaussionFsProgram.UnBind();
-		fboBlur1.UnBind();
-
-		fboBlur2.Bind();
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		gaussionFsProgram.Bind();
-		fs.DrawWithTexture(FULLSCREEN, erosionFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
-			erosionFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
-			erosionFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fboBlur1.GetBufferByType(NORMALCOLOR));
-		gaussionFsProgram.UnBind();
-		fboBlur2.UnBind();
-
 		originalFsProgram.Bind();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -219,22 +199,20 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			originalFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
 			originalFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
 
-		dilationFsProgram.Bind();
-		fs.DrawWithTexture(RTFULLSCREEN, gaussionFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
-			gaussionFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
-			gaussionFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fboBlur1.GetBufferByType(NORMALCOLOR));
+		horizontalFsProgram.Bind();
+		fs.DrawWithTexture(RTFULLSCREEN, horizontalFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			horizontalFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			horizontalFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
 
-		erosionFsProgram.Bind();
-		fs.DrawWithTexture(LBFULLSCREEN, erosionFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
-			erosionFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
-			erosionFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fboBlur2.GetBufferByType(NORMALCOLOR));
-		erosionFsProgram.UnBind();
+		verticalFsProgram.Bind();
+		fs.DrawWithTexture(LBFULLSCREEN, verticalFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
+			verticalFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
+			verticalFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
 
 		gaussionFsProgram.Bind();
 		fs.DrawWithTexture(RBFULLSCREEN, gaussionFsProgram.GetLocation("pos", GPUProgram::ATTRIBUTE),
 			gaussionFsProgram.GetLocation("texcoord", GPUProgram::ATTRIBUTE),
-			gaussionFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fboBlur2.GetBufferByType(NORMALCOLOR));
-		
+			gaussionFsProgram.GetLocation("U_MainTexture", GPUProgram::UNIFORM), fbo.GetBufferByType(NORMALCOLOR));
 		originalFsProgram.UnBind();
 
 		SwapBuffers(dc);

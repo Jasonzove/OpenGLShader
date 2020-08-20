@@ -161,6 +161,8 @@
     <None Include="Res\shader\full_screen_quad.fs" />
     <None Include="Res\shader\full_screen_quad.vs" />
     <None Include="Res\shader\gaussion.fs" />
+    <None Include="Res\shader\gaussion_horizontal.fs" />
+    <None Include="Res\shader\gaussion_vertical.fs" />
     <None Include="Res\shader\light.fs" />
     <None Include="Res\shader\light.vs" />
     <None Include="Res\shader\light_spot.fs" />
@@ -173,6 +175,7 @@
     <None Include="Res\shader\specular_vertex.vs" />
     <None Include="Res\shader\x_ray.fs" />
     <None Include="Res\shader\x_ray.vs" />
+    <None Include="shader_f.bin" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\full_screen_quad.h" />
