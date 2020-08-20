@@ -11,7 +11,7 @@ void main()
     //1 2 1
     vec4 color = vec4(0.0);
     int coreSize = 3;
-    float texe10Offset = 1/200.0;
+    float texe10Offset = 1/100.0;
     float kernal[9] = {1,2,1,2,4,2,1,2,1}; //从左下角开始扫描
     //kernal[6] = 1;kernal[7] = 2;kernal[8] = 1;
     //kernal[3] = 2;kernal[4] = 4;kernal[5] = 2;
