@@ -155,6 +155,9 @@
     <None Include="Res\shader\gaussion_horizontal.fs">
       <Filter>Resource Files\shader</Filter>
     </None>
+    <None Include="Res\shader\hdr_full_screen.fs">
+      <Filter>Resource Files\shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

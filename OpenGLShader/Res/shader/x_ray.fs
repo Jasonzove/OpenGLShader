@@ -17,5 +17,5 @@ void main()
 		alpha = pow(1-cosThta, 3);
 	}
 
-	gl_FragColor = vec4(1.0,1.0,1.0,alpha);
+	gl_FragColor = vec4(1.0,1.0,1.0,alpha)*10.0;
 }

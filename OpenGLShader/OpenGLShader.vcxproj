@@ -163,6 +163,7 @@
     <None Include="Res\shader\gaussion.fs" />
     <None Include="Res\shader\gaussion_horizontal.fs" />
     <None Include="Res\shader\gaussion_vertical.fs" />
+    <None Include="Res\shader\hdr_full_screen.fs" />
     <None Include="Res\shader\light.fs" />
     <None Include="Res\shader\light.vs" />
     <None Include="Res\shader\light_spot.fs" />
